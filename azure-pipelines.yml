@@ -21,7 +21,8 @@ jobs:
 
   - script: |
       npm install
-    displayName: 'npm install'
+      npm run build
+    displayName: 'npm install and run'
 
   - task: PublishPipelineArtifact@1
     inputs:
