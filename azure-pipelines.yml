@@ -1,0 +1,52 @@
+resources:
+  repositories:
+    - repository: devops
+      type: github
+      name: Rhinops-Sela/devops
+      endpoint: Rhinops-Sela
+
+trigger:
+- master
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+jobs:
+- job: Build
+  steps:
+  - task: NodeTool@0
+    inputs:
+      versionSpec: '10.x'
+    displayName: 'Install Node.js'
+
+  - script: |
+      npm build
+    displayName: 'npm build'
+
+  - script: |
+      mkdir $(Build.SourcesDirectory)/dist
+      echo 'hello world' > $(Build.SourcesDirectory)/dist/hello.txt
+      mkdir $(Build.SourcesDirectory)/node_modules
+      echo 'hello world' > $(Build.SourcesDirectory)/node_modules/hello.txt
+    displayName: 'dummy create dist and node modules'
+
+  - task: PublishPipelineArtifact@1
+    inputs:
+      targetPath: '$(Build.SourcesDirectory)/dist'
+      artifact: 'dist'
+      publishLocation: 'pipeline'
+    displayName: 'Publish dist'
+
+  - task: PublishPipelineArtifact@1
+    inputs:
+      targetPath: '$(Build.SourcesDirectory)/node_modules'
+      artifact: 'node_modules'
+      publishLocation: 'pipeline'
+    displayName: 'Publish node_modules'
+
+- job: Publish
+  displayName: Publish a new container image
+  condition: and(succeeded(), eq(variables['publish'], 'true'))
+  dependsOn: Build
+  steps:
+    - template: build-and-push.yaml@devops 

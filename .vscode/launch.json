@@ -1,0 +1,25 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "debug fennec-backend",
+      "sourceMaps": true,
+      "protocol": "inspector",
+      "program": "${workspaceFolder}/src/index.ts",
+      "cwd": "${workspaceFolder}",
+      "preLaunchTask": "npm: build-debug-fennec-backend",
+      "outFiles": [
+        "${workspaceFolder}/dist/*.js"
+      ],
+      "env": {
+        "LOG_LEVEL": "0",
+        "RUNNING_PORT": "3000"
+      }
+    }
+  ]
+}
