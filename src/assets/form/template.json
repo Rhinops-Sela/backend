@@ -1,0 +1,179 @@
+[
+  {
+    "name": "cluster",
+    "description": "EKS cluster configuration",
+    "displayName": "Cluster",
+    "pages": [
+      {
+        "name": "Cluster Definition",
+        "mandatory": true,
+        "displayName": "Cluster Definition",
+        "image": "https://www.logolynx.com/images/logolynx/64/64e425928274da0cc3cbb8c4c664a196.png",
+        "description": "Please provide cluster information, if cluster doesn't exists it will be created",
+        "inputs": [
+          {
+            "controlType": "text",
+            "tooltip": "Please provide the correct cluster information",
+            "displayName": "Cluster Name",
+            "regexValidation": ".*",
+            "serverValue": "${CLUSTER_NAME}"
+          },
+          {
+            "controlType": "select",
+            "tooltip": "Select Cluster Region",
+            "displayName": "Cluster Region",
+            "options": [
+              "us-east-1",
+              "us-east-2"
+            ],
+            "regexValidation": ".*",
+            "serverValue": "${CLUSTER_REGION}"
+          },
+          {
+            "controlType": "checkbox",
+            "tooltip": "Install Dashboard?",
+            "displayName": "Install Dashboard?",
+            "serverValue": "${CLUSTER_DASHBOARD}"
+          },
+          {
+            "controlType": "checkbox",
+            "tooltip": "Pods will be able to scale",
+            "displayName": "Install Horizontal Autoscaling?",
+            "serverValue": "${CLUSTER_HORIZONTAL_AUTO_SCALE}"
+          },
+          {
+            "controlType": "checkbox",
+            "tooltip": "Nodes will be able to scale",
+            "displayName": "Install Vertical Autoscaling?",
+            "serverValue": "${CLUSTER_VERTICAL_AUTO_SCALE}"
+          }
+        ]
+      },
+      {
+        "name": "NodeGroup",
+        "displayName": "NodeGroup",
+        "mandatory": true,
+        "image": "https://www.logolynx.com/images/logolynx/64/64e425928274da0cc3cbb8c4c664a196.png",
+        "description": "Please Provide Information Regarding The NodGroup",
+        "repeatable": true,
+        "inputs": [
+          {
+            "controlType": "text",
+            "tooltip": "Node Group Name",
+            "displayName": "Name",
+            "regexValidation": ".*",
+            "serverValue": "${VPN_USERS}"
+          },
+          {
+            "controlType": "text",
+            "tooltip": "Minimum number of instances",
+            "displayName": "Min",
+            "regexValidation": "^[0-9]*$",
+            "serverValue": "${VPN_USERS}"
+          },
+          {
+            "controlType": "text",
+            "tooltip": "Maximum number of instances",
+            "displayName": "Max",
+            "regexValidation": "^[0-9]*$",
+            "serverValue": "${VPN_USERS}"
+          },
+          {
+            "controlType": "text",
+            "tooltip": "Desired number of instances",
+            "displayName": "Desired",
+            "regexValidation": "^[0-9]*$",
+            "serverValue": "${VPN_USERS}"
+          },
+          {
+            "controlType": "checkbox",
+            "tooltip": "The nodes in this group will be spot instance",
+            "displayName": "Use Spot Instances?",
+            "serverValue": "${VPN_USERS}"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "network",
+    "description": "Networking configuration for the cluster",
+    "displayName": "Networking",
+    "pages": [
+      {
+        "name": "VPN",
+        "displayName": "VPN",
+        "image": "https://i7.pngflow.com/pngimage/607/950/png-openvpn-virtual-private-network-android-client-computer-software-android-computer-network-text-orange-logo-clipart.png",
+        "description": "Please provide a list of users to be able to access the network",
+        "inputs": [
+          {
+            "controlType": "textarea",
+            "tooltip": "Please provide comma (,) separated list of users",
+            "displayName": "List of VPN users",
+            "serverValue": "${VPN_USERS}",
+            "regexValidation": ".*"
+          }
+        ]
+      },
+      {
+        "name": "nginx",
+        "displayName": "NGINX",
+        "image": "https://img.favpng.com/14/21/23/nginx-computer-servers-laravel-reverse-proxy-load-balancing-png-favpng-64natq6AX9G4UFAvB0AhNZGsJ.jpg",
+        "description": "This will allow the creation of ingress controller",
+        "inputs": [
+          {
+            "controlType": "select",
+            "tooltip": "If public selected a public elb will be created",
+            "options": [
+              "Public",
+              "Private"
+            ],
+            "displayName": "Load Balancer Topology",
+            "serverValue": "${ELB_TOPOLOGY}",
+            "regexValidation": ".*"
+          },
+          {
+            "controlType": "select",
+            "tooltip": "The type of load balancer to create",
+            "options": [
+              "ALB",
+              "NLB",
+              "Classic"
+            ],
+            "displayName": "Load Balancer Type",
+            "serverValue": "${ELB_TYPE}",
+            "regexValidation": ".*"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "dataBases",
+    "displayName": "Databases",
+    "description": "Selection of databases to available in the cluster",
+    "pages": [
+      {
+        "name": "DynamoDB",
+        "displayName": "DynamoDB",
+        "image": "https://www.logolynx.com/images/logolynx/64/64e425928274da0cc3cbb8c4c664a196.png",
+        "description": "Description place holder",
+        "inputs": [
+          {
+            "controlType": "text",
+            "tooltip": "Connection Port",
+            "displayName": "Port",
+            "regexValidation": "^[0-9]*$",
+            "serverValue": "${VPN_USERS}"
+          },
+          {
+            "controlType": "checkbox",
+            "tooltip": "Use Persistent Data?",
+            "displayName": "Use Persistent Data?",
+            "serverValue": "${VPN_USERS}"
+          }
+        ]
+      }
+    ]
+  }
+]

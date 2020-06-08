@@ -7,8 +7,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start:dev": "nodemon",
     "start": "npm run build && node dist/index.js",
-    "build": "rimraf ./dist && tsc",
-    "build-debug-fennec-backend": "tsc"
+    "build": "rimraf ./dist && tsc && npm run copy-assets",
+    "build-debug-fennec-backend": "tsc && npm run copy-assets",
+    "copy-assets": "mkdir -p dist/assets && cp -rv src/assets/ dist/assets/"
   },
   "keywords": [],
   "author": "",
