@@ -1,6 +1,7 @@
 import * as http from "http";
 import debug from "debug";
 import App from "./app";
+import { DeploymentServer } from "./api/deployment-socket-api";
 
 debug("ts-express:server");
 
@@ -11,6 +12,8 @@ const server = http.createServer(App);
 server.listen(port);
 server.on("error", onError);
 server.on("listening", onListening);
+
+const socketServer = new DeploymentServer();
 
 function normalizePort(val: number | string): number | string | boolean {
   const port: number = (typeof val === "string") ? parseInt(val, 10) : val;

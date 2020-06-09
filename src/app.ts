@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import { deploymentRoutes } from "./routes/deployment-routes";
 import { Logger } from "./logger/logger";
-
+import * as bodyParser from "body-parser";
 
 const options: cors.CorsOptions = {
   allowedHeaders: [
@@ -29,6 +29,7 @@ class App {
     this.express = express();
     this.express.use(cors(options));
     this.express.options("*", cors(options));
+    this.express.use(bodyParser.json());
     this.routes();
   }
 

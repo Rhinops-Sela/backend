@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import path from "path";
 import { Logger } from "../logger/logger";
+import { DeploymentServer } from "./deployment-socket-api";
+
 export let validateJson = async (req: Request, res: Response, next: any) => {
   try {
     return res.status(200).json({ status: true });
@@ -11,6 +13,7 @@ export let validateJson = async (req: Request, res: Response, next: any) => {
 
 export let startDeployment = async (req: Request, res: Response, next: any) => {
   try {
+    DeploymentServer.startDeployment(req.body.form);
     return res.status(200).json({ status: true });
   } catch (error) {
     next(error);
