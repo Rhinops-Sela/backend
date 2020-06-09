@@ -5,13 +5,12 @@
 Required variables:
 RUNNING_PORT: (default=3000)
 LOG_LEVEL: (default=0 -> INFO)
-FORM_TEMPLATE_FOLDER
 FORM_TEMPLATE_FILE
-AWS_ACCES_KEY
+AWS_ACCESS_KEY
 AWS_SECRET_KEY
 AWS_REGION
 AWS_FORMAT
-COMPONENTS_ROOT
+COMPONENTS_ROOTS: (comma separated list of folders containing components)
 
 
 build prod: npm run build

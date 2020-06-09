@@ -20,7 +20,7 @@ export let startDeployment = async (req: Request, res: Response, next: any) => {
 export let getForm = async (req: Request, res: Response, next: any) => {
   try {
     Logger.info("Loading Form: Started");
-    const filePath = path.join(__dirname, process.env.FORM_TEMPLATE_FOLDER!, process.env.FORM_TEMPLATE_FILE!);
+    const filePath = path.join(__dirname, process.env.FORM_TEMPLATE_FILE!);
     Logger.info("Loading Form: Completed");
     return res.sendFile(filePath);
   } catch (error) {

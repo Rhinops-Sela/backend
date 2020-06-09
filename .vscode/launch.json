@@ -17,11 +17,8 @@
         "${workspaceFolder}/dist/*.js"
       ],
       "env": {
-        "LOG_LEVEL": "0",
-        "RUNNING_PORT": "3000",
-        "COMPONENTS_ROOT": "/Users/iliagerman/Work/Sela/env_creator/components",
-        "FORM_TEMPLATE_FOLDER": "../assets/form",
-        "FORM_TEMPLATE_FILE": "template.json"
+        "COMPONENTS_ROOTS": "/Users/iliagerman/Work/Sela/env_creator/components",
+        "FORM_TEMPLATE_FILE": "../assets/form/template.json"
       }
     }
   ]
