@@ -38,6 +38,13 @@ jobs:
       publishLocation: 'pipeline'
     displayName: 'Publish node_modules'
 
+  - task: PublishPipelineArtifact@1
+    inputs:
+      targetPath: '$(Build.SourcesDirectory)/package.json'
+      artifact: 'package_json'
+      publishLocation: 'pipeline'
+    displayName: 'Publish package.json'
+
 - job: Publish
   displayName: Publish a new container image
   condition: and(succeeded(), eq(variables['publish'], 'true'))
