@@ -6,7 +6,6 @@ import { IDomain } from "../interfaces/IDomain";
 const cors = require("cors");
 
 export class DeploymentServer {
-  public static readonly PORT: number = 8080;
   private _app: express.Application;
   private server: Server;
   private io: SocketIO.Server;
@@ -14,7 +13,7 @@ export class DeploymentServer {
   static socket: any;
   constructor() {
     this._app = express();
-    this.port = process.env.PORT || DeploymentServer.PORT;
+    this.port = process.env.SOCKET_PORT || 9090;
     this._app.use(cors());
     this._app.options("*", cors());
     this.server = createServer(this._app);
