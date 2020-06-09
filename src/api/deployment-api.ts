@@ -13,8 +13,9 @@ export let validateJson = async (req: Request, res: Response, next: any) => {
 
 export let startDeployment = async (req: Request, res: Response, next: any) => {
   try {
-    DeploymentServer.startDeployment(req.body.form);
-    return res.status(200).json({ status: true });
+    const deploymentIdentifier = `deploymentUpdate-${new Date().toISOString()}`;
+    DeploymentServer.startDeployment(req.body.form, deploymentIdentifier);
+    return res.status(200).json({ deploymentIdentifier: deploymentIdentifier });
   } catch (error) {
     next(error);
   }

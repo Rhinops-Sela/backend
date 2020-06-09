@@ -37,16 +37,17 @@ export class DeploymentServer {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
-  public static async startDeployment(domains: IDomain[]) {
+  public static async startDeployment(domains: IDomain[], deploymentIdentifier: string) {
     if (!DeploymentServer.socket) {
       return;
     }
+    await DeploymentServer.delay(2000);
     for (const domain of domains) {
+      DeploymentServer.socket.emit(deploymentIdentifier, `Deploying: ${domain.displayName}`);
       await DeploymentServer.delay(2000);
-      DeploymentServer.socket.emit("deploymentUpdate", `Deploying: ${domain.displayName}`);
     }
 
-    DeploymentServer.socket.emit("deploymentUpdate", "Done!");
+    DeploymentServer.socket.emit(deploymentIdentifier, "Done!");
 
   }
 
