@@ -47,7 +47,7 @@ export class DeploymentServer {
     maxAttempts: 3,
     backOff: 1000,
     doRetry: (e: Error) => {
-      return e.message === "Error: 500; Unable to open socket";
+      return e.message === `Error: 500; Unable to open socket: ${e.message}`;
     }
   })
   public static async startDeployment(domains: IDomain[], deploymentIdentifier: string) {
