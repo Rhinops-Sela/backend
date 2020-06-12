@@ -10,7 +10,7 @@ AWS_ACCESS_KEY
 AWS_SECRET_KEY
 AWS_REGION
 AWS_FORMAT
-COMPONENTS_ROOTS: (comma separated list of folders containing components)
+COMPONENTS_ROOT
 
 
 build prod: npm run build

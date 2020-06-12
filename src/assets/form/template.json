@@ -6,7 +6,7 @@
     "pages": [
       {
         "name": "Cluster Definition",
-        "mandatory": true,
+        "mandatory": false,
         "displayName": "Cluster Definition",
         "image": "https://www.logolynx.com/images/logolynx/64/64e425928274da0cc3cbb8c4c664a196.png",
         "description": "Please provide cluster information, if cluster doesn't exists it will be created",
@@ -52,7 +52,7 @@
       {
         "name": "NodeGroup",
         "displayName": "NodeGroup",
-        "mandatory": true,
+        "mandatory": false,
         "image": "https://www.logolynx.com/images/logolynx/64/64e425928274da0cc3cbb8c4c664a196.png",
         "description": "Please Provide Information Regarding The NodGroup",
         "repeatable": true,
@@ -171,6 +171,29 @@
             "tooltip": "Use Persistent Data?",
             "displayName": "Use Persistent Data?",
             "serverValue": "${VPN_USERS}"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "elastic search",
+    "description": "ES Configuration",
+    "displayName": "Elasticsearch",
+    "pages": [
+      {
+        "name": "elasticsearch",
+        "mandatory": false,
+        "displayName": "Elasticsearch Configuratio",
+        "image": "https://www.logolynx.com/images/logolynx/64/64e425928274da0cc3cbb8c4c664a196.png",
+        "description": "Please provide ces luster information",
+        "inputs": [
+          {
+            "controlType": "text",
+            "tooltip": "Please provide the correct cluster information",
+            "displayName": "Cluster Name",
+            "regexValidation": ".*",
+            "serverValue": "${ES_CLUSTER_NAME}"
           }
         ]
       }

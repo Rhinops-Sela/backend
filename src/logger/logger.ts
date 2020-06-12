@@ -16,7 +16,7 @@ export class Logger {
     return this.WriteToConsole(messageObject);
   }
   static info(message: any, additionalObjects = [], stack?: any) {
-    const messageObject: ILogMessage = {
+      const messageObject: ILogMessage = {
       message: {
         prefix: "INFO",
         content: message,

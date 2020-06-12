@@ -1,10 +1,14 @@
 import express from "express";
-import socketIo from "socket.io";
 import { createServer, Server } from "http";
+import socketIo from "socket.io";
 import { DeploymentEvent } from "../enums/deployment";
+import { IDeploymentMessage } from "../interfaces/IDeploymentMessage";
 import { IDomain } from "../interfaces/IDomain";
-import { ITotals } from "../interfaces/ITotals";
-import { DeploymentMessage } from "../interfaces/IDeploymentMessage";
+import { IDploymentProgress } from "../interfaces/ITotals";
+import { Logger } from "../logger/logger";
+import { IPage } from "./../interfaces/IPage";
+import { spawn } from "child_process";
+import { Retryable, BackOffPolicy } from 'typescript-retry-decorator';
 const cors = require("cors");
 
 export class DeploymentServer {
@@ -12,7 +16,7 @@ export class DeploymentServer {
   private server: Server;
   private io: SocketIO.Server;
   private port: string | number;
-  static socket: any;
+  public static socket: any;
   constructor() {
     this._app = express();
     this.port = process.env.SOCKET_PORT || 9090;
@@ -25,13 +29,13 @@ export class DeploymentServer {
 
   private listen(): void {
     this.server.listen(this.port, () => {
-      console.log("Running server on port %s", this.port);
+      Logger.info(`Running server on port ${this.port}`);
     });
     this.io.on(DeploymentEvent.CONNECT, (socket: any) => {
-      console.log("Connected client on port %s.", this.port);
+      Logger.info(`Connected client on port: ${this.port}`);
       DeploymentServer.socket = socket;
       socket.on(DeploymentEvent.DISCONNECT, () => {
-        console.log("Client disconnected");
+        Logger.info("Client disconnected");
       });
     });
   }
@@ -39,56 +43,124 @@ export class DeploymentServer {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
+  @Retryable({
+    maxAttempts: 3,
+    backOff: 1000,
+    doRetry: (e: Error) => {
+      return e.message === "Error: 500; Unable to open socket";
+    }
+  })
   public static async startDeployment(domains: IDomain[], deploymentIdentifier: string) {
     if (!DeploymentServer.socket) {
-      return;
+      throw ("Not ready");
     }
-    let pageCounter = 0;
     const totals = DeploymentServer.getTotals(domains);
-    await DeploymentServer.delay(2000);
     for (let domainIndex = 0; domainIndex < domains.length; domainIndex++) {
       for (let pageIndex = 0; pageIndex < domains[domainIndex].pages.length; pageIndex++) {
-        let messageText = `Deploying: ${domains[domainIndex].pages[pageIndex].displayName}`;
-        if (domains[domainIndex].pages[pageIndex].repeatable) {
-          messageText = `Deploying: ${domains[domainIndex].pages[pageIndex].displayName}-${domains[domainIndex].pages[pageIndex].inputs[0].value}`;
+        const page = domains[domainIndex].pages[pageIndex];
+        try {
+          totals.curentPage = totals.curentPage + 1;
+          const exitCode = await DeploymentServer.executeScript(page, deploymentIdentifier, totals);
+          const deploymentMessage: IDeploymentMessage = {
+            message: `Deploying: ${page.displayName} - Completed`,
+            progress: totals
+          };
+          if (exitCode) {
+            deploymentMessage.error = true;
+            deploymentMessage.message = `Deploying: ${page.displayName} - Failed`;
+            deploymentMessage.final;
+            DeploymentServer.socket.emit(deploymentIdentifier, deploymentMessage);
+            return;
+          }
+          DeploymentServer.socket.emit(deploymentIdentifier, deploymentMessage);
+        } catch (error) {
+          Logger.error(error.message, error.stack);
+          const deploymentMessage: IDeploymentMessage = {
+            message: `Deployment Failed, ${error.message}`,
+            final: true
+          };
+          DeploymentServer.socket.emit(deploymentIdentifier, deploymentMessage);
+          return;
         }
-        DeploymentServer.socket.emit(deploymentIdentifier, {
-          message: messageText,
-          totalDomains: totals.totalDomains,
-          currentDomain: domainIndex,
-          totalPages: totals.totalPages,
-          currentPage: pageCounter
-        });
-        pageCounter = pageCounter + 1;
-        await DeploymentServer.delay(10000);
-
       }
     }
-    const deploymentMessage: DeploymentMessage = {
-      message: `Deployment Completed`,
-      totalDomains: totals.totalDomains,
-      currentDomain: totals.totalDomains,
-      totalPages: totals.totalPages,
-      currentPage: totals.totalPages,
-      final: true
-    };
-    DeploymentServer.socket.emit(deploymentIdentifier, deploymentMessage);
-
   }
 
-  private static getTotals(domains: IDomain[]): ITotals {
+  private static getTotals(domains: IDomain[]): IDploymentProgress {
     const totalDomains = domains.length;
     let totalPages = 0;
     domains.forEach(domain => {
-      domain.pages.forEach(page => {
+      domain.pages.forEach(() => {
         totalPages++;
       });
     });
 
-    return { totalDomains: totalDomains, totalPages: totalPages };
+    return { totalDomains: totalDomains, totalPages: totalPages, curentPage: 0 };
   }
 
   get app(): express.Application {
     return this._app;
+  }
+
+  private static async backupWorkingFolder(pageName: string): Promise<string> {
+    const path = require("path");
+    const timeStamp = new Date().getMilliseconds();
+    const newFolder = path.join(process.env.COMPONENTS_ROOT || " /Users/iliagerman/Work/Sela/env_creator/components", `${pageName}_${timeStamp}`);
+    // const createFile = path.join(newFolder, "create.sh");
+    const fs = require("fs-extra");
+    try {
+      await fs.copy(path.join(process.env.COMPONENTS_ROOT, pageName), newFolder);
+      // await fs.ensureFile(createFile);
+      return newFolder;
+    } catch (err) {
+      Logger.error(err.message, err.stack);
+      return "";
+      // throw (new Error(err.message));
+    }
+  }
+
+  private static replaceUserParameters(workingFolder: string, pageToExecute: IPage) {
+
+  }
+
+  private static async deleteFolder(workingFolder: string) {
+    const fs = require("fs-extra");
+    await fs.remove(workingFolder);
+  }
+
+
+  private static async executeScript(pageToExecute: IPage, deploymentIdentifier: string, totals: IDploymentProgress) {
+    try {
+      const workingFolder = await this.backupWorkingFolder(pageToExecute.name);
+      this.replaceUserParameters(workingFolder, pageToExecute);
+      // const process = spawn(`${workingFolder}/create.sh`);
+      const process = spawn(`${workingFolder}/create.sh`);
+      const deploymentMessage: IDeploymentMessage = {
+        message: `Deploying: ${pageToExecute.displayName}`,
+        progress: totals
+      };
+      process.stdout.setEncoding("utf-8");
+      process.stdout.on("data", function (log) {
+        deploymentMessage.log = log;
+        DeploymentServer.socket.emit(deploymentIdentifier, deploymentMessage);
+      });
+      process.stderr.setEncoding("utf-8");
+      process.stderr.on("data", function (log) {
+        deploymentMessage.log = log;
+        deploymentMessage.error = true;
+        DeploymentServer.socket.emit(deploymentIdentifier, deploymentMessage);
+      });
+      const exitCode = await new Promise((resolve, reject) => {
+        process.on("close", resolve);
+      }).catch((error) => {
+        Logger.error(error.message, error.stack);
+      });
+      await this.deleteFolder(workingFolder);
+      return exitCode;
+    }
+    catch (error) {
+      Logger.error(error.message, error.stack);
+    }
+
   }
 }
