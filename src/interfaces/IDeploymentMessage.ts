@@ -5,4 +5,6 @@ export interface IDeploymentMessage {
   progress?: IDploymentProgress;
   final?: true;
   error?: boolean;
+  domainName: string;
+  pageNmae: string;
 }

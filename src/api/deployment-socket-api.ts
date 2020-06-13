@@ -1,9 +1,9 @@
+import { IDomain } from "./../interfaces/IDomain";
 import express from "express";
 import { createServer, Server } from "http";
 import socketIo from "socket.io";
 import { DeploymentEvent } from "../enums/deployment";
 import { IDeploymentMessage } from "../interfaces/IDeploymentMessage";
-import { IDomain } from "../interfaces/IDomain";
 import { IDploymentProgress } from "../interfaces/ITotals";
 import { Logger } from "../logger/logger";
 import { IPage } from "./../interfaces/IPage";
@@ -60,24 +60,28 @@ export class DeploymentServer {
         const page = domains[domainIndex].pages[pageIndex];
         try {
           totals.curentPage = totals.curentPage + 1;
-          const exitCode = await DeploymentServer.executeScript(page, deploymentIdentifier, totals);
+          const exitCode = await DeploymentServer.executeScript(page, deploymentIdentifier, totals, domains[domainIndex]);
           const deploymentMessage: IDeploymentMessage = {
             message: `Deploying: ${page.displayName} - Completed`,
-            progress: totals
+            progress: totals,
+            pageNmae: page.name,
+            domainName: domains[domainIndex].name
           };
           if (exitCode) {
             deploymentMessage.error = true;
             deploymentMessage.message = `Deploying: ${page.displayName} - Failed`;
             deploymentMessage.final;
             DeploymentServer.socket.emit(deploymentIdentifier, deploymentMessage);
-            return;
+            // return;
           }
           DeploymentServer.socket.emit(deploymentIdentifier, deploymentMessage);
         } catch (error) {
           Logger.error(error.message, error.stack);
           const deploymentMessage: IDeploymentMessage = {
             message: `Deployment Failed, ${error.message}`,
-            final: true
+            final: true,
+            pageNmae: page.name,
+            domainName: domains[domainIndex].name
           };
           DeploymentServer.socket.emit(deploymentIdentifier, deploymentMessage);
           return;
@@ -129,29 +133,32 @@ export class DeploymentServer {
   }
 
 
-  private static async executeScript(pageToExecute: IPage, deploymentIdentifier: string, totals: IDploymentProgress) {
+  private static async executeScript(pageToExecute: IPage, deploymentIdentifier: string, totals: IDploymentProgress, domain: IDomain) {
     try {
       const workingFolder = await this.backupWorkingFolder(pageToExecute.name);
+      const env = Object.create(process.env);
       this.replaceUserParameters(workingFolder, pageToExecute);
-      // const process = spawn(`${workingFolder}/create.sh`);
-      const process = spawn(`${workingFolder}/create.sh`);
+
+      const deploymentProcess = spawn("sh", [`${workingFolder}/create.sh`], { env: env });
       const deploymentMessage: IDeploymentMessage = {
         message: `Deploying: ${pageToExecute.displayName}`,
-        progress: totals
+        progress: totals,
+        pageNmae: pageToExecute.name,
+        domainName: domain.name
       };
-      process.stdout.setEncoding("utf-8");
-      process.stdout.on("data", function (log) {
+      deploymentProcess.stdout.setEncoding("utf-8");
+      deploymentProcess.stdout.on("data", function (log) {
         deploymentMessage.log = log;
         DeploymentServer.socket.emit(deploymentIdentifier, deploymentMessage);
       });
-      process.stderr.setEncoding("utf-8");
-      process.stderr.on("data", function (log) {
+      deploymentProcess.stderr.setEncoding("utf-8");
+      deploymentProcess.stderr.on("data", function (log) {
         deploymentMessage.log = log;
         deploymentMessage.error = true;
         DeploymentServer.socket.emit(deploymentIdentifier, deploymentMessage);
       });
       const exitCode = await new Promise((resolve, reject) => {
-        process.on("close", resolve);
+        deploymentProcess.on("close", resolve);
       }).catch((error) => {
         Logger.error(error.message, error.stack);
       });
