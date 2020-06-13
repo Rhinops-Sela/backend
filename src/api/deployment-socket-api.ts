@@ -109,7 +109,7 @@ export class DeploymentServer {
   private static async backupWorkingFolder(pageName: string): Promise<string> {
     const path = require("path");
     const timeStamp = new Date().getMilliseconds();
-    const newFolder = path.join(process.env.COMPONENTS_ROOT || " /Users/iliagerman/Work/Sela/env_creator/components", `${pageName}_${timeStamp}`);
+    const newFolder = path.join(process.env.COMPONENTS_ROOT, `${pageName}_${timeStamp}`);
     // const createFile = path.join(newFolder, "create.sh");
     const fs = require("fs-extra");
     try {
