@@ -184,7 +184,7 @@
       {
         "name": "elasticsearch",
         "mandatory": false,
-        "displayName": "Elasticsearch Configuratio",
+        "displayName": "ES Configuration",
         "image": "https://www.logolynx.com/images/logolynx/64/64e425928274da0cc3cbb8c4c664a196.png",
         "description": "Please provide ces luster information",
         "inputs": [
