@@ -18,6 +18,7 @@
       ],
       "env": {
         "COMPONENTS_ROOT": "/Users/iliagerman/Work/Sela/env_creator/components",
+        "WORKING_ROOT": "/Users/iliagerman/Work/Sela/env_creator/working_folder",
         "FORM_TEMPLATE_FILE": "../assets/form/template.json",
         "AWS_PROFILE": ""
       }
