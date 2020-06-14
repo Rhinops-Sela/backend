@@ -15,6 +15,7 @@ server.on("listening", onListening);
 
 const socketServer = new DeploymentServer();
 
+
 function normalizePort(val: number | string): number | string | boolean {
   const port: number = (typeof val === "string") ? parseInt(val, 10) : val;
   if (isNaN(port)) return val;

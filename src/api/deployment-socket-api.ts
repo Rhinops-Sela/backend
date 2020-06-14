@@ -9,7 +9,7 @@ import { IDploymentProgress } from "../interfaces/ITotals";
 import { Logger } from "../logger/logger";
 import { IPage } from "./../interfaces/IPage";
 import { spawn } from "child_process";
-import { Retryable, BackOffPolicy } from 'typescript-retry-decorator';
+import { Retryable, BackOffPolicy } from "typescript-retry-decorator";
 import { worker } from "cluster";
 const cors = require("cors");
 
@@ -45,16 +45,11 @@ export class DeploymentServer {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
-  @Retryable({
-    maxAttempts: 3,
-    backOff: 1000,
-    doRetry: (e: Error) => {
-      return e.message === `Error: 500; Unable to open socket: ${e.message}`;
-    }
-  })
+  @Retryable({ maxAttempts: 3, backOff: 1000 })
   public static async startDeployment(domains: IDomain[], deploymentIdentifier: string) {
     if (!DeploymentServer.socket) {
-      throw ("Not ready");
+      DeploymentServer.delay(1000);
+      throw new Error("Not ready");
     }
     const totals = DeploymentServer.getTotals(domains);
     const workingFolders: string[] = [];
@@ -220,7 +215,7 @@ export class DeploymentServer {
       }).catch((error) => {
         Logger.error(error.message, error.stack);
       });
-      // await this.deleteFolder(workingFolder);
+      await this.deleteFolder(workingFolder);
       return exitCode;
     }
     catch (error) {
