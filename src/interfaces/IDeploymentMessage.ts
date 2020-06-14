@@ -6,5 +6,5 @@ export interface IDeploymentMessage {
   final?: true;
   error?: boolean;
   domainName: string;
-  pageNmae: string;
+  pageName: string;
 }

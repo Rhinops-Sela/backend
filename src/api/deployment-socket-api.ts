@@ -70,7 +70,7 @@ export class DeploymentServer {
           const deploymentMessage: IDeploymentMessage = {
             message: `Deploying: ${page.displayName} - Completed`,
             progress: totals,
-            pageNmae: page.name,
+            pageName: page.name,
             domainName: domains[domainIndex].name
           };
           if (exitCode) {
@@ -88,7 +88,7 @@ export class DeploymentServer {
           const deploymentMessage: IDeploymentMessage = {
             message: `Deployment Failed, ${error.message}`,
             final: true,
-            pageNmae: page.name,
+            pageName: page.name,
             domainName: domains[domainIndex].name
           };
           DeploymentServer.socket.emit(deploymentIdentifier, deploymentMessage);
@@ -196,7 +196,7 @@ export class DeploymentServer {
       const deploymentMessage: IDeploymentMessage = {
         message: `Deploying: ${pageToExecute.displayName}`,
         progress: totals,
-        pageNmae: pageToExecute.name,
+        pageName: pageToExecute.name,
         domainName: domain.name
       };
       deploymentProcess.stdout.setEncoding("utf-8");
@@ -215,7 +215,7 @@ export class DeploymentServer {
       }).catch((error) => {
         Logger.error(error.message, error.stack);
       });
-      await this.deleteFolder(workingFolder);
+      // await this.deleteFolder(workingFolder);
       return exitCode;
     }
     catch (error) {
