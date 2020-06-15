@@ -9,8 +9,7 @@ import { IDploymentProgress } from "../interfaces/ITotals";
 import { Logger } from "../logger/logger";
 import { IPage } from "./../interfaces/IPage";
 import { spawn } from "child_process";
-import { Retryable, BackOffPolicy } from "typescript-retry-decorator";
-import { worker } from "cluster";
+import { Retryable } from "typescript-retry-decorator";
 const cors = require("cors");
 
 export class DeploymentServer {
