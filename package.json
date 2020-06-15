@@ -9,7 +9,7 @@
     "start": "npm run build && node dist/index.js",
     "build": "rimraf ./dist && tsc && npm run copy-assets",
     "build-debug-fennec-backend": "tsc && npm run copy-assets",
-    "copy-assets": "mkdir -p dist/assets && cp -rv src/assets/ dist/"
+    "copy-assets": "cp -rv src/assets/ dist/assets/"
   },
   "keywords": [],
   "author": "",
