@@ -120,6 +120,8 @@ export class DeploymentServer {
     const path = require("path");
     const timeStamp = new Date().getMilliseconds();
     const newFolder = path.join(process.env.WORKING_ROOT, `${page.name}_${timeStamp}`);
+    const shell = require('shelljs');
+    shell.mkdir('-p', newFolder);
     // const createFile = path.join(newFolder, "create.sh");
     const fs = require("fs-extra");
     try {
