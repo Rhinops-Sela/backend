@@ -1,19 +1,19 @@
 import * as http from "http";
 import debug from "debug";
 import App from "./app";
-import { DeploymentServer } from "./api/deployment-socket-api";
+
 
 debug("ts-express:server");
 
 const port = normalizePort(process.env.RUNNING_PORT || 3000);
-App.set("port", port);
+App.express.set("port", port);
 
-const server = http.createServer(App);
+const server = http.createServer(App.express);
 server.listen(port);
 server.on("error", onError);
 server.on("listening", onListening);
 
-const socketServer = new DeploymentServer();
+
 
 
 function normalizePort(val: number | string): number | string | boolean {

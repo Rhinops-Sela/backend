@@ -15,14 +15,14 @@ export class Logger {
     };
     return this.WriteToConsole(messageObject);
   }
-  static info(message: any, additionalObjects = [], stack?: any) {
-      const messageObject: ILogMessage = {
+  static info(message: any, additionalObjects?: any, stack?: any) {
+    const messageObject: ILogMessage = {
       message: {
         prefix: "INFO",
         content: message,
         severity: 0,
       },
-      additionalObjects: additionalObjects,
+      additionalObjects: additionalObjects || [],
       stack: stack,
     };
     return this.WriteToConsole(messageObject);
