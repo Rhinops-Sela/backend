@@ -3,6 +3,7 @@
     "name": "cluster",
     "description": "EKS cluster configuration",
     "displayName": "Cluster",
+    "executer": "pwsh",
     "pages": [
       {
         "name": "Cluster Definition",
@@ -97,6 +98,7 @@
   },
   {
     "name": "network",
+    "executer": "bash",
     "description": "Networking configuration for the cluster",
     "displayName": "Networking",
     "pages": [
@@ -150,6 +152,7 @@
   },
   {
     "name": "dataBases",
+    "executer": "bash",
     "displayName": "Databases",
     "description": "Selection of databases to available in the cluster",
     "pages": [
@@ -178,6 +181,7 @@
   },
   {
     "name": "elastic search",
+    "executer": "bash",
     "description": "ES Configuration",
     "displayName": "Elasticsearch",
     "pages": [

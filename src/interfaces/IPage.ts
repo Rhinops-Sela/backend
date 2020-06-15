@@ -2,6 +2,7 @@ import { IInput } from './IInput';
 
 export interface IPage {
   name: string;
+  executer: string,
   displayName: string;
   image: string;
   description: string;
