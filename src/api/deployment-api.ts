@@ -36,7 +36,7 @@ export let startDeletion = async (req: Request, res: Response, next: any) => {
   try {
     const deploymentIdentifier = `deploymentUpdate-${new Date().toISOString()}`;
     try {
-      const deploymentExecuter = new DeploymentExecuter(req.body.form.reverse(), deploymentIdentifier);
+      const deploymentExecuter = new DeploymentExecuter(req.body.form, deploymentIdentifier);
       if (req.query.wait) {
         await deploymentExecuter.startDeletion();
       } else {
