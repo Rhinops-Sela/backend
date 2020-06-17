@@ -1,15 +1,56 @@
 [
   {
+    "name": "authentiction",
+    "description": "AWS Authentication Credentilas For Resource Creation",
+    "displayName": "Authentication",
+    "executer": "bash",
+    "pages": [
+      {
+        "name": "authentiction",
+        "global": true,
+        "deletable": false,
+        "mandatory": true,
+        "displayName": "AWS Credentials",
+        "image": "assets/component_logos/aws.png",
+        "description": "AWS credentials for connecting to the cluster",
+        "inputs": [
+          {
+            "controlType": "text",
+            "tooltip": "AWS Access Key",
+            "displayName": "Access Key",
+            "regexValidation": ".*",
+            "serverValue": "${ACCESS_KEY}"
+          },
+          {
+            "controlType": "text-password",
+            "tooltip": "AWS Secret Access Key",
+            "displayName": "Secret Access Key",
+            "regexValidation": ".*",
+            "serverValue": "${SECRET_ACCESS_KEY}"
+          },
+          {
+            "controlType": "text",
+            "tooltip": "AWS region for components creation",
+            "displayName": "Region",
+            "regexValidation": ".*",
+            "serverValue": "${REGION}"
+          }
+        ]
+      }
+    ]
+  },
+  {
     "name": "cluster",
     "description": "EKS cluster configuration",
     "displayName": "Cluster",
     "executer": "pwsh",
     "pages": [
       {
-        "name": "Cluster Definition",
+        "name": "cluster",
+        "deletable": false,
         "mandatory": false,
         "displayName": "Cluster Definition",
-        "image": "https://www.logolynx.com/images/logolynx/64/64e425928274da0cc3cbb8c4c664a196.png",
+        "image": "assets/component_logos/k8s.png",
         "description": "Please provide cluster information, if cluster doesn't exists it will be created",
         "inputs": [
           {
@@ -51,10 +92,10 @@
         ]
       },
       {
-        "name": "NodeGroup",
+        "name": "nodegroup",
         "displayName": "NodeGroup",
         "mandatory": false,
-        "image": "https://www.logolynx.com/images/logolynx/64/64e425928274da0cc3cbb8c4c664a196.png",
+        "image": "assets/component_logos/k8s.png",
         "description": "Please Provide Information Regarding The NodGroup",
         "repeatable": true,
         "inputs": [
@@ -63,34 +104,40 @@
             "tooltip": "Node Group Name",
             "displayName": "Name",
             "regexValidation": ".*",
-            "serverValue": "${VPN_USERS}"
+            "serverValue": "${NAME}"
           },
           {
             "controlType": "text",
             "tooltip": "Minimum number of instances",
             "displayName": "Min",
             "regexValidation": "^[0-9]*$",
-            "serverValue": "${VPN_USERS}"
+            "serverValue": "${MIN}"
           },
           {
             "controlType": "text",
             "tooltip": "Maximum number of instances",
             "displayName": "Max",
             "regexValidation": "^[0-9]*$",
-            "serverValue": "${VPN_USERS}"
+            "serverValue": "${MAX}"
           },
           {
             "controlType": "text",
             "tooltip": "Desired number of instances",
             "displayName": "Desired",
             "regexValidation": "^[0-9]*$",
-            "serverValue": "${VPN_USERS}"
+            "serverValue": "${DESIRED}"
           },
           {
             "controlType": "checkbox",
-            "tooltip": "The nodes in this group will be spot instance",
-            "displayName": "Use Spot Instances?",
-            "serverValue": "${VPN_USERS}"
+            "tooltip": "Use Spot Instances?",
+            "displayName": "Spot?",
+            "serverValue": "${SPOT_INSTANCES}"
+          },
+          {
+            "controlType": "textarea",
+            "tooltip": "Please provide list of node taints",
+            "displayName": "Taints",
+            "serverValue": "${TAINTS}"
           }
         ]
       }
@@ -103,16 +150,31 @@
     "displayName": "Networking",
     "pages": [
       {
-        "name": "VPN",
+        "name": "vpn",
         "displayName": "VPN",
-        "image": "https://i7.pngflow.com/pngimage/607/950/png-openvpn-virtual-private-network-android-client-computer-software-android-computer-network-text-orange-logo-clipart.png",
+        "image": "assets/component_logos/openvpn.png",
         "description": "Please provide a list of users to be able to access the network",
         "inputs": [
           {
             "controlType": "textarea",
             "tooltip": "Please provide comma (,) separated list of users",
             "displayName": "List of VPN users",
-            "serverValue": "${VPN_USERS}",
+            "serverValue": "${USERS}",
+            "regexValidation": ".*"
+          }
+        ]
+      },
+      {
+        "name": "dns",
+        "displayName": "DNS",
+        "image": "assets/component_logos/dns.png",
+        "description": "Set of A / CNAME records to be accessible while connected to VPN",
+        "inputs": [
+          {
+            "controlType": "textarea",
+            "tooltip": "Please provide comma (,) separated list of A/CNMAE records (foo.io foo.namespace.svc.cluster.local)",
+            "displayName": "DNS Records",
+            "serverValue": "${DNS_RECORDS}",
             "regexValidation": ".*"
           }
         ]
@@ -120,7 +182,7 @@
       {
         "name": "nginx",
         "displayName": "NGINX",
-        "image": "https://img.favpng.com/14/21/23/nginx-computer-servers-laravel-reverse-proxy-load-balancing-png-favpng-64natq6AX9G4UFAvB0AhNZGsJ.jpg",
+        "image": "assets/component_logos/nginx.png",
         "description": "This will allow the creation of ingress controller",
         "inputs": [
           {
@@ -151,53 +213,253 @@
     ]
   },
   {
-    "name": "dataBases",
+    "name": "monitoring",
     "executer": "bash",
-    "displayName": "Databases",
-    "description": "Selection of databases to available in the cluster",
+    "description": "Configuration & Parameters for monitoring the cluster",
+    "displayName": "Monitoring",
     "pages": [
       {
-        "name": "DynamoDB",
-        "displayName": "DynamoDB",
-        "image": "https://www.logolynx.com/images/logolynx/64/64e425928274da0cc3cbb8c4c664a196.png",
-        "description": "Description place holder",
+        "name": "prometheus",
+        "displayName": "Prometheus",
+        "image": "assets/component_logos/prometheus.png",
+        "description": "Prometheus configuration & parameters",
         "inputs": [
           {
             "controlType": "text",
-            "tooltip": "Connection Port",
-            "displayName": "Port",
-            "regexValidation": "^[0-9]*$",
-            "serverValue": "${VPN_USERS}"
+            "tooltip": "Sender Address",
+            "displayName": "From Email",
+            "serverValue": "${FROM}",
+            "regexValidation": ".*"
+          },
+          {
+            "controlType": "text",
+            "tooltip": "Email address of the reciever",
+            "displayName": "To Email",
+            "serverValue": "${TO}",
+            "regexValidation": ".*"
+          },
+          {
+            "controlType": "text",
+            "tooltip": "SMTP",
+            "displayName": "SMTP",
+            "serverValue": "${TO}",
+            "regexValidation": ".*"
+          },
+          {
+            "controlType": "text",
+            "tooltip": "SMTP username",
+            "displayName": "Username",
+            "serverValue": "${USERNAME}",
+            "regexValidation": ".*"
+          },
+          {
+            "controlType": "text-password",
+            "tooltip": "SMTP password",
+            "displayName": "Password",
+            "serverValue": "${PASSWORD}",
+            "regexValidation": ".*"
+          }
+        ]
+      },
+      {
+        "name": "grafana",
+        "displayName": "Grafana",
+        "image": "assets/component_logos/grafana.png",
+        "description": "Grafana configuration & parameters",
+        "inputs": [
+          {
+            "controlType": "textarea",
+            "tooltip": "Please provide comma (,) separated list of dashoards to install",
+            "displayName": "Dashboards To Install",
+            "serverValue": "${DASHNOARDS}",
+            "regexValidation": ".*"
           },
           {
             "controlType": "checkbox",
             "tooltip": "Use Persistent Data?",
             "displayName": "Use Persistent Data?",
-            "serverValue": "${VPN_USERS}"
+            "serverValue": "${PERSISTANT_DATA}"
+          }
+        ]
+      },
+      {
+        "name": "datadog",
+        "displayName": "Datadog Logging",
+        "image": "assets/component_logos/datadog.png",
+        "description": "Datadog configuration & parameters",
+        "inputs": [
+          {
+            "controlType": "text",
+            "tooltip": "Please select the namespace",
+            "displayName": "Namespace",
+            "regexValidation": ".*",
+            "serverValue": "${NAMESPACE}"
+          },
+          {
+            "controlType": "text-password",
+            "tooltip": "Datadog password",
+            "displayName": "Password",
+            "regexValidation": ".*",
+            "serverValue": "${PASSWORD}"
+          },
+          {
+            "controlType": "text",
+            "tooltip": "Connection Port",
+            "displayName": "Port",
+            "regexValidation": "^[0-9]*$",
+            "serverValue": "${PORT}"
+          },
+          {
+            "controlType": "text",
+            "tooltip": "List of namespaces to be ignored for log shipping (comma seperated)",
+            "displayName": "Ignored Namespaces",
+            "regexValidation": ".*",
+            "serverValue": "${IGNORED_NAMESPACES}"
           }
         ]
       }
     ]
   },
   {
-    "name": "elastic search",
+    "name": "databases",
     "executer": "bash",
-    "description": "ES Configuration",
-    "displayName": "Elasticsearch",
+    "displayName": "Databases",
+    "description": "Selection of databases to available in the cluster",
     "pages": [
       {
-        "name": "elasticsearch",
-        "mandatory": false,
-        "displayName": "ES Configuration",
-        "image": "https://www.logolynx.com/images/logolynx/64/64e425928274da0cc3cbb8c4c664a196.png",
-        "description": "Please provide ces luster information",
+        "name": "dynamo",
+        "displayName": "DynamoDB",
+        "image": "assets/component_logos/dynamo.png",
+        "description": "DynamoDB configuration & parameters",
+        "inputs": [
+          {
+            "controlType": "text",
+            "tooltip": "Please select the namespace",
+            "displayName": "Namespace",
+            "regexValidation": ".*",
+            "serverValue": "${NAMESPACE}"
+          },
+          {
+            "controlType": "text",
+            "tooltip": "Connection Port",
+            "displayName": "Port",
+            "regexValidation": "^[0-9]*$",
+            "serverValue": "${PORT}"
+          },
+          {
+            "controlType": "checkbox",
+            "tooltip": "Use Persistent Data?",
+            "displayName": "Use Persistent Data?",
+            "serverValue": "${PERSISTANT_DATA}"
+          }
+        ]
+      },
+      {
+        "name": "redis",
+        "displayName": "Redis",
+        "image": "assets/component_logos/redis.png",
+        "description": "Redis configuration & parameters",
         "inputs": [
           {
             "controlType": "text",
             "tooltip": "Please provide the correct cluster information",
             "displayName": "Cluster Name",
             "regexValidation": ".*",
-            "serverValue": "${ES_CLUSTER_NAME}"
+            "serverValue": "${CLUSTER_NAME}"
+          },
+          {
+            "controlType": "text",
+            "tooltip": "Please select the namespace",
+            "displayName": "Namespace",
+            "regexValidation": ".*",
+            "serverValue": "${NAMESPACE}"
+          },
+          {
+            "controlType": "text",
+            "tooltip": "# of master nodes",
+            "displayName": "Master Nodes",
+            "regexValidation": "^[0-9]*$",
+            "serverValue": "${NUMBER_MASTERS}"
+          },
+          {
+            "controlType": "text",
+            "tooltip": "# of slave nodes",
+            "displayName": "Slave Nodes",
+            "regexValidation": "^[0-9]*$",
+            "serverValue": "${NUMBER_SLAVES}"
+          },
+          {
+            "controlType": "multi-select",
+            "tooltip": "Selecte ES cluster instance type",
+            "displayName": "Instsance Type",
+            "options": [
+              "m5.xlrarge",
+              "m5.large",
+              "m5.2xlrarge"
+            ],
+            "regexValidation": ".*",
+            "serverValue": "${INSTANCE_TYPE}"
+          },
+          {
+            "controlType": "checkbox",
+            "tooltip": "Use Spot Instances?",
+            "displayName": "Spot?",
+            "serverValue": "${SPOT_INSTANCES}"
+          }
+        ]
+      },
+      {
+        "name": "elasticsearch",
+        "mandatory": false,
+        "displayName": "ES",
+        "image": "assets/component_logos/elasticsearch.png",
+        "description": "ES configuration & parameters",
+        "inputs": [
+          {
+            "controlType": "text",
+            "tooltip": "Please provide the correct cluster information",
+            "displayName": "Cluster Name",
+            "regexValidation": ".*",
+            "serverValue": "${CLUSTER_NAME}"
+          },
+          {
+            "controlType": "text",
+            "tooltip": "Please select the namespace",
+            "displayName": "Namespace",
+            "regexValidation": ".*",
+            "serverValue": "${NAMESPACE}"
+          },
+          {
+            "controlType": "text",
+            "tooltip": "# of master nodes",
+            "displayName": "Master Nodes",
+            "regexValidation": "^[0-9]*$",
+            "serverValue": "${NUMBER_MASTERS}"
+          },
+          {
+            "controlType": "text",
+            "tooltip": "# of slave nodes",
+            "displayName": "Slave Nodes",
+            "regexValidation": "^[0-9]*$",
+            "serverValue": "${NUMBER_SLAVES}"
+          },
+          {
+            "controlType": "multi-select",
+            "tooltip": "Selecte ES cluster instance type",
+            "displayName": "Instsance Type",
+            "options": [
+              "m5.xlrarge",
+              "m5.large",
+              "m5.2xlrarge"
+            ],
+            "regexValidation": ".*",
+            "serverValue": "${INSTANCE_TYPE}"
+          },
+          {
+            "controlType": "checkbox",
+            "tooltip": "Use Spot Instances?",
+            "displayName": "Spot?",
+            "serverValue": "${SPOT_INSTANCES}"
           }
         ]
       }
