@@ -150,7 +150,7 @@
     "displayName": "Networking",
     "pages": [
       {
-        "name": "vpn",
+        "name": "openvpn",
         "displayName": "VPN",
         "image": "assets/component_logos/openvpn.png",
         "description": "Please provide a list of users to be able to access the network",
@@ -165,7 +165,7 @@
         ]
       },
       {
-        "name": "dns",
+        "name": "core-dns",
         "displayName": "DNS",
         "image": "assets/component_logos/dns.png",
         "description": "Set of A / CNAME records to be accessible while connected to VPN",
