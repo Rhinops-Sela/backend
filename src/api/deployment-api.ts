@@ -3,7 +3,7 @@ import path from "path";
 import { Logger } from "../logger/logger";
 import { DeploymentServer } from "./deployment-socket-api";
 import app from "../app";
-import { DeploymentExecuter } from "../workers/deployment-executer";
+import { DeploymentExecuter } from "../workers/deployment-worker";
 export let validateJson = async (req: Request, res: Response, next: any) => {
   try {
     return res.status(200).json({ status: true });
@@ -16,9 +16,13 @@ export let startDeployment = async (req: Request, res: Response, next: any) => {
   try {
     const deploymentIdentifier = `deploymentUpdate-${new Date().toISOString()}`;
     try {
-      const deploymentExecuter = new DeploymentExecuter();
-      deploymentExecuter.startDeployment(req.body.form, deploymentIdentifier);
-      // app.socketServer.sendMessage.startDeployment(req.body.form, deploymentIdentifier);
+      const deploymentExecuter = new DeploymentExecuter(req.body.form, deploymentIdentifier);
+      if (req.query.wait) {
+        await deploymentExecuter.startDeployment();
+      } else {
+        deploymentExecuter.startDeployment();
+      }
+
     } catch (error) {
       Logger.info("retrying");
     }
@@ -28,12 +32,20 @@ export let startDeployment = async (req: Request, res: Response, next: any) => {
   }
 };
 
-export let startDeploymentWait = async (req: Request, res: Response, next: any) => {
+export let startDeletion = async (req: Request, res: Response, next: any) => {
   try {
     const deploymentIdentifier = `deploymentUpdate-${new Date().toISOString()}`;
-    const deploymentExecuter = new DeploymentExecuter();
-    const result = await deploymentExecuter.startDeployment(req.body.form, deploymentIdentifier);
-    return res.status(200).json({ deploymentIdentifier: deploymentIdentifier, result: result });
+    try {
+      const deploymentExecuter = new DeploymentExecuter(req.body.form.reverse(), deploymentIdentifier);
+      if (req.query.wait) {
+        await deploymentExecuter.startDeletion();
+      } else {
+        deploymentExecuter.startDeletion();
+      }
+    } catch (error) {
+      Logger.info("retrying");
+    }
+    return res.status(200).json({ deploymentIdentifier: deploymentIdentifier });
   } catch (error) {
     next(error);
   }

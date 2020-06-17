@@ -1,56 +1,62 @@
-import { IPage } from './../interfaces/IPage';
+import { IDomain } from '../interfaces/IDomain';
+import { IPage } from '../interfaces/IPage';
 import { spawn } from "child_process";
 import { IDploymentProgress } from "../interfaces/ITotals";
-import { IDomain } from "../interfaces/IDomain";
 import { IDeploymentMessage } from "../interfaces/IDeploymentMessage";
 import { Logger } from "../logger/logger";
 import app from "../app";
 import pathJoin from "path";
 import { IExecuter } from '../interfaces/IExecuter';
 export class DeploymentExecuter {
-  constructor() {
+  constructor(public domains: IDomain[], public deploymentIdentifier:string) {
 
   }
+  public async startDeletion() {
+    return await this.startExecution("Deleting", "delete");
+  }
+  public async startDeployment() {
+    return await this.startExecution("Deplopyment", "create");
+  }
 
-  public async startDeployment(domains: IDomain[], deploymentIdentifier: string) {
-    const totals = this.getTotals(domains);
+  private async startExecution(verb:string, mode: string) {
+    const totals = this.getTotals(this.domains);
     const workingFolders: string[] = [];
-    for (let domainIndex = 0; domainIndex < domains.length; domainIndex++) {
-      for (let pageIndex = 0; pageIndex < domains[domainIndex].pages.length; pageIndex++) {
-        const page = domains[domainIndex].pages[pageIndex];
+    for (let domainIndex = 0; domainIndex < this.domains.length; domainIndex++) {
+      for (let pageIndex = 0; pageIndex < this.domains[domainIndex].pages.length; pageIndex++) {
+        const page = this.domains[domainIndex].pages[pageIndex];
         workingFolders.push(await this.backupWorkingFolder(page));
       }
     }
     Logger.info(`Workingfolder: ${workingFolders}`);
-    for (let domainIndex = 0; domainIndex < domains.length; domainIndex++) {
-      for (let pageIndex = 0; pageIndex < domains[domainIndex].pages.length; pageIndex++) {
-        const page = domains[domainIndex].pages[pageIndex];
+    for (let domainIndex = 0; domainIndex < this.domains.length; domainIndex++) {
+      for (let pageIndex = 0; pageIndex < this.domains[domainIndex].pages.length; pageIndex++) {
+        const page = this.domains[domainIndex].pages[pageIndex];
         try {
           totals.curentPage = totals.curentPage + 1;
-          const exitCode = await this.executeScript(workingFolders[totals.curentPage - 1], page, deploymentIdentifier, totals, domains[domainIndex]);
+          const exitCode = await this.executeScript(workingFolders[totals.curentPage - 1], page, this.deploymentIdentifier, totals, this.domains[domainIndex], mode);
           const deploymentMessage: IDeploymentMessage = {
-            message: `Deploying: ${page.displayName} - Completed`,
+            message: `${verb}: ${page.displayName} - Completed`,
             progress: totals,
             pageName: page.name,
-            domainName: domains[domainIndex].name
+            domainName: this.domains[domainIndex].name
           };
           if (exitCode) {
             deploymentMessage.error = true;
-            deploymentMessage.message = `Deploying: ${page.displayName} - Failed`;
+            deploymentMessage.message = `${verb}: ${page.displayName} - Failed`;
             deploymentMessage.final;
-            app.socketServer.sendMessage(deploymentIdentifier, deploymentMessage);
+            app.socketServer.sendMessage(this.deploymentIdentifier, deploymentMessage);
           } else {
-            app.socketServer.sendMessage(deploymentIdentifier, deploymentMessage);
+            app.socketServer.sendMessage(this.deploymentIdentifier, deploymentMessage);
           }
         } catch (error) {
           Logger.error(error.message, error.stack);
           const deploymentMessage: IDeploymentMessage = {
-            message: `Deployment Failed, ${error.message}`,
+            message: `${verb} Failed, ${error.message}`,
             final: true,
             pageName: page.name,
-            domainName: domains[domainIndex].name
+            domainName: this.domains[domainIndex].name
           };
-          app.socketServer.sendMessage(deploymentIdentifier, deploymentMessage);
+          app.socketServer.sendMessage(this.deploymentIdentifier, deploymentMessage);
           return;
         }
       }
@@ -106,15 +112,15 @@ export class DeploymentExecuter {
     return files;
   }
 
-  private getDeployemntExecuter(page: IPage): IExecuter {
+  private getDeployemntExecuter(page: IPage, mode: string): IExecuter {
     switch (page.executer) {
       case 'ps1': {
-        return { executer: page.executer, file: 'create.ps1' };
+        return { executer: page.executer, file: `${mode}.ps1` };
       }
       default: {
-        return { executer: 'bash', file: 'create.sh' };
+        return { executer: 'bash', file: `${mode}.sh` };
       }
-    } 
+    }
   }
 
   private async backupWorkingFolder(page: IPage): Promise<string> {
@@ -134,10 +140,10 @@ export class DeploymentExecuter {
     }
   }
 
-  private async executeScript(workingFolder: string, pageToExecute: IPage, deploymentIdentifier: string, totals: IDploymentProgress, domain: IDomain) {
+  private async executeScript(workingFolder: string, pageToExecute: IPage, deploymentIdentifier: string, totals: IDploymentProgress, domain: IDomain, mode: string) {
     try {
       const env = Object.create(process.env);
-      const executer = this.getDeployemntExecuter(pageToExecute);
+      const executer = this.getDeployemntExecuter(pageToExecute, mode);
       const deploymentProcess = spawn(executer.executer, [`${workingFolder}/${executer.file}`], { env: env });
       const deploymentMessage: IDeploymentMessage = {
         message: `Deploying: ${pageToExecute.displayName}`,
