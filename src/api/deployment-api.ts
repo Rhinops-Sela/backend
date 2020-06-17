@@ -15,39 +15,34 @@ export let validateJson = async (req: Request, res: Response, next: any) => {
 export let startDeployment = async (req: Request, res: Response, next: any) => {
   try {
     const deploymentIdentifier = `deploymentUpdate-${new Date().toISOString()}`;
-    try {
-      const deploymentExecuter = new DeploymentExecuter(req.body.form, deploymentIdentifier);
-      if (req.query.wait) {
-        await deploymentExecuter.startDeployment();
-      } else {
-        deploymentExecuter.startDeployment();
-      }
-
-    } catch (error) {
-      Logger.info("retrying");
+    const deploymentExecuter = new DeploymentExecuter(req.body.form, deploymentIdentifier);
+    const workingFolders = await deploymentExecuter.createWorkingFolders();
+    if (req.query.wait) {
+      await deploymentExecuter.startDeployment(workingFolders);
+    } else {
+      deploymentExecuter.startDeployment(workingFolders);
     }
     return res.status(200).json({ deploymentIdentifier: deploymentIdentifier });
   } catch (error) {
-    next(error);
+    Logger.error(error.message, error.stack);
+    return res.status(500).json({ error: error.message });
   }
 };
 
 export let startDeletion = async (req: Request, res: Response, next: any) => {
   try {
     const deploymentIdentifier = `deploymentUpdate-${new Date().toISOString()}`;
-    try {
-      const deploymentExecuter = new DeploymentExecuter(req.body.form, deploymentIdentifier);
-      if (req.query.wait) {
-        await deploymentExecuter.startDeletion();
-      } else {
-        deploymentExecuter.startDeletion();
-      }
-    } catch (error) {
-      Logger.info("retrying");
+    const deploymentExecuter = new DeploymentExecuter(req.body.form, deploymentIdentifier);
+    const workingFolders = await deploymentExecuter.createWorkingFolders();
+    if (req.query.wait) {
+      await deploymentExecuter.startDeletion(workingFolders);
+    } else {
+      deploymentExecuter.startDeletion(workingFolders);
     }
     return res.status(200).json({ deploymentIdentifier: deploymentIdentifier });
   } catch (error) {
-    next(error);
+    Logger.error(error.message, error.stack);
+    return res.status(500).json({ error: error.message });
   }
 };
 
