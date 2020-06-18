@@ -128,7 +128,7 @@ export class DeploymentExecuter {
 
   private getDeployemntExecuter(page: IPage, mode: string): IExecuter {
     switch (page.executer) {
-      case "ps1": {
+      case "pwsh": {
         return { executer: page.executer, file: `${mode}.ps1` };
       }
       default: {
