@@ -95,10 +95,10 @@
             "serverValue": "${NAME}"
           },
           {
-            "template": "autoscaling-max"
+            "template": "autoscaling-maximum"
           },
           {
-            "template": "autoscaling-min"
+            "template": "autoscaling-minimum"
           },
           {
             "template": "autoscaling-desired"
