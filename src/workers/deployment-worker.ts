@@ -173,7 +173,10 @@ export class DeploymentExecuter {
     try {
       const env = Object.create(process.env);
       const executer = this.getDeployemntExecuter(pageToExecute, mode);
-      const deploymentProcess = spawn(executer.executer, [`${workingFolder}/${executer.file}`], { env: env });
+      const deploymentProcess = spawn(executer.executer, [`${workingFolder}/${executer.file}`], {
+        env: env,
+        cwd: workingFolder,
+      });
       const deploymentMessage: IDeploymentMessage = {
         message: `Deploying: ${pageToExecute.displayName}`,
         progress: totals,
