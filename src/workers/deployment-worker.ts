@@ -145,13 +145,21 @@ export class DeploymentExecuter {
     shell.mkdir("-p", newFolder);
     const fs = require("fs-extra");
     try {
-      await fs.copy(path.join(process.env.COMPONENTS_ROOT, page.name), newFolder);
+      await fs.copy(path.join(process.env.COMPONENTS_ROOT, this.removedCloned(page.name)), newFolder);
       await this.replaceUserParameters(newFolder, page);
       return newFolder;
     } catch (err) {
       Logger.error(err.message, err.stack);
       throw new Error(err.message);
     }
+  }
+
+  private removedCloned(pageName: string): string {
+    if (pageName.indexOf("_fenneccloned") > -1) {
+      const cleanedPageName = pageName.substring(0, pageName.lastIndexOf("_"));
+      return cleanedPageName;
+    }
+    return pageName;
   }
 
   private async executeScript(
