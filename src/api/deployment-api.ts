@@ -19,7 +19,7 @@ export let startDeployment = async (req: Request, res: Response, next: any) => {
     } else {
       deploymentExecuter.startDeployment(req.body.workingFolders);
     }
-    return res.status(200);
+    return res.status(200).json(true);
   } catch (error) {
     Logger.error(error.message, error.stack);
     return res.status(500).json({ error: error.message });

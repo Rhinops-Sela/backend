@@ -25,6 +25,7 @@ export class DeploymentExecuter {
       }
     }
     Logger.info(`Workingfolder: ${workingFolders}`);
+    await this.getCommonFolder();
     return workingFolders;
   }
 
@@ -137,6 +138,15 @@ export class DeploymentExecuter {
     }
   }
 
+  private async getCommonFolder() {
+    const path = require("path");
+    const newFolder = path.join(__dirname, process.env.WORKING_ROOT, `common`);
+    const shell = require("shelljs");
+    shell.mkdir("-p", newFolder);
+    const fs = require("fs-extra");
+    await fs.copy(path.join(__dirname, process.env.COMPONENTS_ROOT, 'common'), newFolder);
+  }
+
   private async backupWorkingFolder(page: IPage): Promise<string> {
     const path = require("path");
     const timeStamp = new Date().getMilliseconds();
@@ -175,7 +185,7 @@ export class DeploymentExecuter {
       const executer = this.getDeployemntExecuter(pageToExecute, mode);
       const deploymentProcess = spawn(executer.executer, [`${workingFolder}/${executer.file}`], {
         env: env,
-        cwd: workingFolder,
+        cwd: workingFolder
       });
       const deploymentMessage: IDeploymentMessage = {
         message: `Deploying: ${pageToExecute.displayName}`,
@@ -193,6 +203,7 @@ export class DeploymentExecuter {
         deploymentMessage.log = log;
         deploymentMessage.error = true;
         app.socketServer.sendMessage(deploymentIdentifier, deploymentMessage);
+        deploymentProcess.kill();
       });
       const exitCode = await new Promise((resolve, reject) => {
         deploymentProcess.on("close", resolve);

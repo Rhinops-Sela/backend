@@ -9,7 +9,7 @@
         "name": "authentiction",
         "global": true,
         "deletable": false,
-        "mandatory": true,
+        "mandatory": false,
         "displayName": "AWS Credentials",
         "image": "assets/component_logos/aws.png",
         "description": "AWS credentials for connecting to the cluster",
@@ -43,10 +43,10 @@
     "name": "cluster",
     "description": "EKS cluster configuration",
     "displayName": "Cluster",
-    "executer": "pwsh",
     "pages": [
       {
         "name": "cluster",
+        "executer": "pwsh",
         "deletable": false,
         "mandatory": false,
         "displayName": "Cluster Definition",
@@ -57,7 +57,8 @@
             "template": "cluster-name"
           },
           {
-           "template": "region"
+           "template": "region",
+           "serverValue": "${CLUSTER_REGION}"
           },
           {
             "controlType": "checkbox",
