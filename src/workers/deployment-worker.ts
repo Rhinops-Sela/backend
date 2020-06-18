@@ -140,12 +140,12 @@ export class DeploymentExecuter {
   private async backupWorkingFolder(page: IPage): Promise<string> {
     const path = require("path");
     const timeStamp = new Date().getMilliseconds();
-    const newFolder = path.join(process.env.WORKING_ROOT, `${page.name}_${timeStamp}`);
+    const newFolder = path.join(__dirname,process.env.WORKING_ROOT, `${page.name}_${timeStamp}`);
     const shell = require("shelljs");
     shell.mkdir("-p", newFolder);
     const fs = require("fs-extra");
     try {
-      await fs.copy(path.join(process.env.COMPONENTS_ROOT, this.removedCloned(page.name)), newFolder);
+      await fs.copy(path.join(__dirname,process.env.COMPONENTS_ROOT, this.removedCloned(page.name)), newFolder);
       await this.replaceUserParameters(newFolder, page);
       return newFolder;
     } catch (err) {

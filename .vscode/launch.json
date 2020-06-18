@@ -17,8 +17,8 @@
         "${workspaceFolder}/dist/*.js"
       ],
       "env": {
-        "COMPONENTS_ROOT": "/Users/iliagerman/Work/Sela/env_creator/components",
-        "WORKING_ROOT": "/Users/iliagerman/Work/Sela/env_creator/working_folder",
+        "COMPONENTS_ROOT": "../../../components",
+        "WORKING_ROOT": "../../../working_folder",
         "MAIN_TEMPLATE_FORM": "../assets/form/main.json",
         "FORM_TEMPLATES_FOLDER": "../assets/templates",
         "AWS_PROFILE": ""
