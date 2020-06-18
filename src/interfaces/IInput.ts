@@ -1,4 +1,5 @@
 export interface IInput {
+  template?: any;
   controlType: string;
   tooltip: string;
   displayName: string;

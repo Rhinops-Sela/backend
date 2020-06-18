@@ -1,8 +1,6 @@
 import { Request, Response } from "express";
 import path from "path";
 import { Logger } from "../logger/logger";
-import { DeploymentServer } from "./deployment-socket-api";
-import app from "../app";
 import { DeploymentExecuter } from "../workers/deployment-worker";
 export let validateJson = async (req: Request, res: Response, next: any) => {
   try {
@@ -11,8 +9,6 @@ export let validateJson = async (req: Request, res: Response, next: any) => {
     next(error);
   }
 };
-
-
 
 export let startDeployment = async (req: Request, res: Response, next: any) => {
   try {
@@ -28,7 +24,6 @@ export let startDeployment = async (req: Request, res: Response, next: any) => {
     return res.status(500).json({ error: error.message });
   }
 };
-
 
 export let prepareProcess = async (req: Request, res: Response, next: any) => {
   try {
@@ -60,7 +55,7 @@ export let startDeletion = async (req: Request, res: Response, next: any) => {
 export let getForm = async (req: Request, res: Response, next: any) => {
   try {
     Logger.info("Loading Form: Started");
-    const filePath = path.join(__dirname, process.env.FORM_TEMPLATE_FILE!);
+    const filePath = path.join(__dirname, process.env.MAIN_TEMPLATE_FORM!);
     Logger.info("Loading Form: Completed");
     return res.sendFile(filePath);
   } catch (error) {
