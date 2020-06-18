@@ -1,0 +1,7 @@
+{
+  "controlType": "text",
+  "tooltip": "SMTP username",
+  "displayName": "Username",
+  "serverValue": "${USERNAME}",
+  "regexValidation": ".*"
+}

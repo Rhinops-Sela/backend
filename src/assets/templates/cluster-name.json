@@ -1,0 +1,7 @@
+{
+  "controlType": "text",
+  "tooltip": "Please provide the correct cluster information",
+  "displayName": "Cluster Name",
+  "regexValidation": ".*",
+  "serverValue": "${CLUSTER_NAME}"
+}

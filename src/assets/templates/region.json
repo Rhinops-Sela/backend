@@ -1,0 +1,11 @@
+{
+  "controlType": "select",
+  "tooltip": "Please select the region",
+  "displayName": "Region",
+  "options": [
+    "us-east-1",
+    "us-east-2"
+  ],
+  "regexValidation": ".*",
+  "serverValue": "${REGION}"
+}

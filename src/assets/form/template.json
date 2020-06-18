@@ -54,28 +54,16 @@
         "description": "Please provide cluster information, if cluster doesn't exists it will be created",
         "inputs": [
           {
-            "controlType": "text",
-            "tooltip": "Please provide the correct cluster information",
-            "displayName": "Cluster Name",
-            "regexValidation": ".*",
-            "serverValue": "${CLUSTER_NAME}"
+            "template": "cluster-name"
           },
           {
-            "controlType": "select",
-            "tooltip": "Select Cluster Region",
-            "displayName": "Cluster Region",
-            "options": [
-              "us-east-1",
-              "us-east-2"
-            ],
-            "regexValidation": ".*",
-            "serverValue": "${CLUSTER_REGION}"
+           "template": "region"
           },
           {
             "controlType": "checkbox",
             "tooltip": "Install Dashboard?",
             "displayName": "Install Dashboard?",
-            "serverValue": "${CLUSTER_DASHBOARD}"
+            "serverValue": "${DASHBOARD}"
           },
           {
             "controlType": "checkbox",
@@ -107,31 +95,16 @@
             "serverValue": "${NAME}"
           },
           {
-            "controlType": "text",
-            "tooltip": "Minimum number of instances",
-            "displayName": "Min",
-            "regexValidation": "^[0-9]*$",
-            "serverValue": "${MIN}"
+            "template": "autoscaling-max"
           },
           {
-            "controlType": "text",
-            "tooltip": "Maximum number of instances",
-            "displayName": "Max",
-            "regexValidation": "^[0-9]*$",
-            "serverValue": "${MAX}"
+            "template": "autoscaling-min"
           },
           {
-            "controlType": "text",
-            "tooltip": "Desired number of instances",
-            "displayName": "Desired",
-            "regexValidation": "^[0-9]*$",
-            "serverValue": "${DESIRED}"
+            "template": "autoscaling-desired"
           },
           {
-            "controlType": "checkbox",
-            "tooltip": "Use Spot Instances?",
-            "displayName": "Spot?",
-            "serverValue": "${SPOT_INSTANCES}"
+            "template": "spot"
           },
           {
             "controlType": "textarea",
@@ -246,18 +219,13 @@
             "regexValidation": ".*"
           },
           {
-            "controlType": "text",
-            "tooltip": "SMTP username",
-            "displayName": "Username",
-            "serverValue": "${USERNAME}",
-            "regexValidation": ".*"
+            "template": "username",
+            "tooltip": "SMTP username"
           },
           {
-            "controlType": "text-password",
+            "template": "username",
             "tooltip": "SMTP password",
-            "displayName": "Password",
-            "serverValue": "${PASSWORD}",
-            "regexValidation": ".*"
+            "displayName": "Password"
           }
         ]
       },
@@ -275,10 +243,7 @@
             "regexValidation": ".*"
           },
           {
-            "controlType": "checkbox",
-            "tooltip": "Use Persistent Data?",
-            "displayName": "Use Persistent Data?",
-            "serverValue": "${PERSISTANT_DATA}"
+            "template": "persistant-data"
           }
         ]
       },
@@ -289,25 +254,14 @@
         "description": "Datadog configuration & parameters",
         "inputs": [
           {
-            "controlType": "text",
-            "tooltip": "Please select the namespace",
-            "displayName": "Namespace",
-            "regexValidation": ".*",
-            "serverValue": "${NAMESPACE}"
+            "template": "namespace"
           },
           {
-            "controlType": "text-password",
-            "tooltip": "Datadog password",
-            "displayName": "Password",
-            "regexValidation": ".*",
-            "serverValue": "${PASSWORD}"
+            "template": "password",
+            "tooltip": "Datadog password"
           },
           {
-            "controlType": "text",
-            "tooltip": "Connection Port",
-            "displayName": "Port",
-            "regexValidation": "^[0-9]*$",
-            "serverValue": "${PORT}"
+            "template": "port"
           },
           {
             "controlType": "text",
@@ -361,50 +315,28 @@
         "description": "Redis configuration & parameters",
         "inputs": [
           {
-            "controlType": "text",
-            "tooltip": "Please provide the correct cluster information",
-            "displayName": "Cluster Name",
-            "regexValidation": ".*",
-            "serverValue": "${CLUSTER_NAME}"
+            "template": "cluster-name"
           },
           {
-            "controlType": "text",
-            "tooltip": "Please select the namespace",
-            "displayName": "Namespace",
-            "regexValidation": ".*",
-            "serverValue": "${NAMESPACE}"
+            "template": "namespace"
           },
           {
-            "controlType": "text",
-            "tooltip": "# of master nodes",
-            "displayName": "Master Nodes",
-            "regexValidation": "^[0-9]*$",
-            "serverValue": "${NUMBER_MASTERS}"
+            "template": "master-nodes"
           },
           {
-            "controlType": "text",
-            "tooltip": "# of slave nodes",
-            "displayName": "Slave Nodes",
-            "regexValidation": "^[0-9]*$",
-            "serverValue": "${NUMBER_SLAVES}"
+            "template": "slave-nodes"
           },
           {
-            "controlType": "multi-select",
-            "tooltip": "Selecte ES cluster instance type",
-            "displayName": "Instsance Type",
+            "template": "instance-select",
+            "tooltip": "Selecte Redis cluster instance type",
             "options": [
               "m5.xlrarge",
               "m5.large",
               "m5.2xlrarge"
-            ],
-            "regexValidation": ".*",
-            "serverValue": "${INSTANCE_TYPE}"
+            ]
           },
           {
-            "controlType": "checkbox",
-            "tooltip": "Use Spot Instances?",
-            "displayName": "Spot?",
-            "serverValue": "${SPOT_INSTANCES}"
+            "template": "spot"
           }
         ]
       },
@@ -416,50 +348,28 @@
         "description": "ES configuration & parameters",
         "inputs": [
           {
-            "controlType": "text",
-            "tooltip": "Please provide the correct cluster information",
-            "displayName": "Cluster Name",
-            "regexValidation": ".*",
-            "serverValue": "${CLUSTER_NAME}"
+            "template": "cluster-name"
           },
           {
-            "controlType": "text",
-            "tooltip": "Please select the namespace",
-            "displayName": "Namespace",
-            "regexValidation": ".*",
-            "serverValue": "${NAMESPACE}"
+            "template": "namespace"
           },
           {
-            "controlType": "text",
-            "tooltip": "# of master nodes",
-            "displayName": "Master Nodes",
-            "regexValidation": "^[0-9]*$",
-            "serverValue": "${NUMBER_MASTERS}"
+            "template": "master-nodes"
           },
           {
-            "controlType": "text",
-            "tooltip": "# of slave nodes",
-            "displayName": "Slave Nodes",
-            "regexValidation": "^[0-9]*$",
-            "serverValue": "${NUMBER_SLAVES}"
+            "template": "slave-nodes"
           },
           {
-            "controlType": "multi-select",
+            "template": "instance-select",
             "tooltip": "Selecte ES cluster instance type",
-            "displayName": "Instsance Type",
             "options": [
               "m5.xlrarge",
               "m5.large",
               "m5.2xlrarge"
-            ],
-            "regexValidation": ".*",
-            "serverValue": "${INSTANCE_TYPE}"
+            ]
           },
           {
-            "controlType": "checkbox",
-            "tooltip": "Use Spot Instances?",
-            "displayName": "Spot?",
-            "serverValue": "${SPOT_INSTANCES}"
+            "template": "spot"
           }
         ]
       }

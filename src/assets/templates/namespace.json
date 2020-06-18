@@ -1,0 +1,7 @@
+{
+  "controlType": "text",
+  "tooltip": "Please select the namespace",
+  "displayName": "Namespace",
+  "regexValidation": ".*",
+  "serverValue": "${NAMESPACE}"
+}

@@ -1,0 +1,8 @@
+{
+  "controlType": "text",
+  "tooltip": "Desired number of instances",
+  "displayName": "Desired",
+  "regexValidation": "^[0-9]*$",
+  "serverValue": "${DESIRED}"
+}
+

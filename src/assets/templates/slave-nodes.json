@@ -1,0 +1,7 @@
+{
+  "controlType": "text",
+  "tooltip": "# of slave nodes",
+  "displayName": "Slave Nodes",
+  "regexValidation": "^[0-9]*$",
+  "serverValue": "${NUMBER_SLAVES}"
+}

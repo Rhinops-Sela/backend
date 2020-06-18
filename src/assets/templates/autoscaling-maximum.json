@@ -1,0 +1,8 @@
+{
+  "controlType": "text",
+  "tooltip": "Maximum number of instances",
+  "displayName": "Max",
+  "regexValidation": "^[0-9]*$",
+  "serverValue": "${MAX}"
+}
+

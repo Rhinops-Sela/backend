@@ -1,0 +1,7 @@
+{
+  "controlType": "text",
+  "tooltip": "# of master nodes",
+  "displayName": "Master Nodes",
+  "regexValidation": "^[0-9]*$",
+  "serverValue": "${NUMBER_MASTERS}"
+}

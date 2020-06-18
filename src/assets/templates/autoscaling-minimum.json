@@ -1,0 +1,7 @@
+{
+  "controlType": "text",
+  "tooltip": "Minimum number of instances",
+  "displayName": "Min",
+  "regexValidation": "^[0-9]*$",
+  "serverValue": "${MIN}"
+}

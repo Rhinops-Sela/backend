@@ -1,0 +1,11 @@
+{
+  "controlType": "multi-select",
+  "displayName": "Instsance Type",
+  "options": [
+    "m5.xlrarge",
+    "m5.large",
+    "m5.2xlrarge"
+  ],
+  "regexValidation": ".*",
+  "serverValue": "${INSTANCE_TYPE}"
+}
