@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import path from "path";
 import { Logger } from "../logger/logger";
 import { DeploymentExecuter } from "../workers/deployment-worker";
+import { FormParser } from "../workers/from-parser";
 export let validateJson = async (req: Request, res: Response, next: any) => {
   try {
     return res.status(200).json({ status: true });
@@ -55,9 +56,9 @@ export let startDeletion = async (req: Request, res: Response, next: any) => {
 export let getForm = async (req: Request, res: Response, next: any) => {
   try {
     Logger.info("Loading Form: Started");
-    const filePath = path.join(__dirname, process.env.MAIN_TEMPLATE_FORM!);
+    const form = await FormParser.getForm();
     Logger.info("Loading Form: Completed");
-    return res.sendFile(filePath);
+    return res.status(200).json({ form });
   } catch (error) {
     Logger.error("Failed To Read JSON file", error.stack);
     next(error);
