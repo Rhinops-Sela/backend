@@ -20,10 +20,7 @@
         "COMPONENTS_ROOT": "../../../components",
         "WORKING_ROOT": "../../../working_folder",
         "MAIN_TEMPLATE_FORM": "../assets/form/main.json",
-        "FORM_TEMPLATES_FOLDER": "../assets/templates",
-        "AWS_ACCESS_KEY_ID": "AKIAQMTJXUUITJCSIHSA",
-        "AWS_SECRET_ACCESS_KEY": "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",
-        "AWS_DEFAULT_REGION": "eu-west-1"
+        "FORM_TEMPLATES_FOLDER": "../assets/templates"
       }
     }
   ]

@@ -68,15 +68,15 @@
           },
           {
             "controlType": "checkbox",
-            "tooltip": "Pods will be able to scale",
-            "displayName": "Install Horizontal Autoscaling?",
-            "serverValue": "${CLUSTER_HORIZONTAL_AUTO_SCALE}"
+            "tooltip": "Cluster autoscaler automatically scales the nodes in a nodegroup",
+            "displayName": "Install Cluster Autoscaler?",
+            "serverValue": "${CLUSTER_AUTO_SCALE}"
           },
           {
             "controlType": "checkbox",
-            "tooltip": "Nodes will be able to scale",
-            "displayName": "Install Vertical Autoscaling?",
-            "serverValue": "${CLUSTER_VERTICAL_AUTO_SCALE}"
+            "tooltip": "Pods will be able to scale horizontally (more/less pods)",
+            "displayName": "Install Pod horizontal autoscaling (HPA)?",
+            "serverValue": "${POD_HORIZONTAL_AUTO_SCALE}"
           }
         ]
       },
