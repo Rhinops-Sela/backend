@@ -7,7 +7,6 @@
     "pages": [
       {
         "name": "authentiction",
-        "global": true,
         "deletable": false,
         "mandatory": true,
         "displayName": "AWS Credentials",

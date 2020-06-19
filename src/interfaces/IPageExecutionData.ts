@@ -1,5 +1,5 @@
 import { IDomain } from './IDomain';
-import { IDploymentProgress } from './ITotals';
+import { IDploymentProgress } from './IDploymentProgress';
 export interface IPageExecutionData {
   deploymentIdentifier:string;
   createMode: boolean;
@@ -7,5 +7,5 @@ export interface IPageExecutionData {
   parentDomain: IDomain;
   progress: IDploymentProgress;
   verb: string;
-  deployMessage: string;
+  log: string;
 }

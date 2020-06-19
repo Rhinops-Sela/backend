@@ -1,12 +1,9 @@
-import express from "express";
 import { createServer, Server } from "http";
 import socketIo from "socket.io";
 import { DeploymentEvent } from "../enums/deployment";
 import { IDeploymentMessage } from "../interfaces/IDeploymentMessage";
 import { Logger } from "../logger/logger";
-import { Retryable } from "typescript-retry-decorator";
-import { timingSafeEqual } from "crypto";
-import { DeploymentExecuter } from "../workers/deployment-worker";
+import { DeploymentExecutionMaster } from "../deployment/deployment-execution-master";
 const cors = require("cors");
 
 export class DeploymentServer {
@@ -29,7 +26,7 @@ export class DeploymentServer {
       Logger.info(`Connected client on port: ${this.port}`);
       this.socket = socket;
       socket.on(DeploymentEvent.KILL, () => {
-        DeploymentExecuter.killRequested = true;
+        DeploymentExecutionMaster.killRequested = true;
         Logger.info("New Client Message");
       });
       socket.on(DeploymentEvent.DISCONNECT, () => {

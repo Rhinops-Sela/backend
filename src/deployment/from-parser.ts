@@ -1,7 +1,8 @@
 const readFilePromise = require("fs-readfile-promise");
-import { ITemplate } from "./../interfaces/ITemplate";
-import { IDomain } from "./../interfaces/IDomain";
+import { ITemplate } from "../interfaces/ITemplate";
+import { IDomain } from "../interfaces/IDomain";
 import path from "path";
+import { Logger } from "../logger/logger";
 export class FormParser {
   public static async getForm(): Promise<IDomain[]> {
     const fs = require("fs");
@@ -48,9 +49,7 @@ export class FormParser {
       }
       return input;
     } catch (error) {
-      console.log("error!!!!!");
-      console.log(error.message);
-      console.log(error);
+      Logger.error(error.message, error.stack);
     }
   }
 

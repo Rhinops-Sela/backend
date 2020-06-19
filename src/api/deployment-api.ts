@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import path from "path";
 import { Logger } from "../logger/logger";
-import { DeploymentExecuter } from "../workers/deployment-worker";
-import { FormParser } from "../workers/from-parser";
+import { DeploymentExecuter } from "../deployment/deployment-worker";
+import { FormParser } from "../deployment/from-parser";
 export let validateJson = async (req: Request, res: Response, next: any) => {
   try {
     return res.status(200).json({ status: true });
@@ -13,20 +13,31 @@ export let validateJson = async (req: Request, res: Response, next: any) => {
 
 export let startDeployment = async (req: Request, res: Response, next: any) => {
   try {
-    const deploymentExecuter = new DeploymentExecuter(req.body.form, req.body.deploymentIdentifier);
+    const delteMode = req.body.delete || false;
+    const deploymentIdentifier = `deploymentUpdate-${new Date().toISOString()}`;
+    const deploymentExecuter = new DeploymentExecuter(req.body.form, deploymentIdentifier);
+    const workingFolders = await deploymentExecuter.createWorkingFolders();
     if (req.query.wait) {
-      await deploymentExecuter.startDeployment(req.body.workingFolders);
+      if (delteMode) {
+        await deploymentExecuter.startDeletion(workingFolders);
+      } else {
+        await deploymentExecuter.startDeployment(workingFolders);
+      }
     } else {
-      deploymentExecuter.startDeployment(req.body.workingFolders);
+      if (delteMode) {
+        deploymentExecuter.startDeletion(workingFolders);
+      } else {
+        deploymentExecuter.startDeployment(workingFolders);
+      }
     }
-    return res.status(200).json(true);
+    return res.status(200).json(deploymentIdentifier);
   } catch (error) {
     Logger.error(error.message, error.stack);
     return res.status(500).json({ error: error.message });
   }
 };
 
-export let prepareProcess = async (req: Request, res: Response, next: any) => {
+/* export let prepareProcess = async (req: Request, res: Response, next: any) => {
   try {
     const deploymentIdentifier = `deploymentUpdate-${new Date().toISOString()}`;
     const deploymentExecuter = new DeploymentExecuter(req.body.form, deploymentIdentifier);
@@ -36,8 +47,8 @@ export let prepareProcess = async (req: Request, res: Response, next: any) => {
     Logger.error(error.message, error.stack);
     return res.status(500).json({ error: error.message });
   }
-};
-
+}; */
+/* 
 export let startDeletion = async (req: Request, res: Response, next: any) => {
   try {
     const deploymentExecuter = new DeploymentExecuter(req.body.form, req.body.deploymentIdentifier);
@@ -51,7 +62,7 @@ export let startDeletion = async (req: Request, res: Response, next: any) => {
     Logger.error(error.message, error.stack);
     return res.status(500).json({ error: error.message });
   }
-};
+}; */
 
 export let getForm = async (req: Request, res: Response, next: any) => {
   try {

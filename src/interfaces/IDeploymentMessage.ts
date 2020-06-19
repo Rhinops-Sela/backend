@@ -1,10 +1,9 @@
-import { IDploymentProgress } from "./ITotals";
+import { IDploymentProgress } from "./IDploymentProgress";
 export interface IDeploymentMessage {
-  message: string;
-  log?: any;
-  progress?: IDploymentProgress;
-  final?: true;
-  error?: boolean;
+  log: any;
+  progress: IDploymentProgress;
+  final: boolean;
+  error: boolean;
   domainName: string;
   pageName: string;
 }
