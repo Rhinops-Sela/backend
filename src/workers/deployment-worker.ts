@@ -1,3 +1,5 @@
+import { IGlobalVariable } from "./../interfaces/IGlobalVariable";
+import { IDeploymentPage } from "./../interfaces/IDeploymentPage";
 import { IDomain } from "../interfaces/IDomain";
 import { IPage } from "../interfaces/IPage";
 import { spawn } from "child_process";
@@ -8,12 +10,45 @@ import app from "../app";
 import pathJoin from "path";
 import { IExecuter } from "../interfaces/IExecuter";
 export class DeploymentExecuter {
+  static killRequested: boolean;
+  private globalVariables: IGlobalVariable[] = [];
   constructor(public domains: IDomain[], public deploymentIdentifier: string) {}
   public async startDeletion(workingFolders: string[]) {
-    return await this.startExecution("Deleting", "delete", workingFolders);
+    const deployPages = this.flattenDomains("Deleting", "delete", workingFolders);
+    return await this.startExecution(deployPages);
   }
   public async startDeployment(workingFolders: string[]) {
-    return await this.startExecution("Deplopyment", "create", workingFolders);
+    const deployPages = this.flattenDomains("Deplopyment", "create", workingFolders);
+    return await this.startExecution(deployPages);
+  }
+
+  private flattenDomains(verb: string, deployMessage: string, workingFolders: string[]): IDeploymentPage[] {
+    const deployPages: IDeploymentPage[] = [];
+    let currentPageCounting = 0;
+    for (let domain of this.domains) {
+      for (let page of domain.pages) {
+        const deploymentPage = {
+          page,
+          executionData: {
+            createMode: false,
+            workingFolder: workingFolders[currentPageCounting],
+            parentDomain: domain,
+            progress: { currentPage: currentPageCounting + 1, totalDomains: this.domains.length },
+            verb: verb,
+            deployMessage: deployMessage,
+            deploymentIdentifier: this.deploymentIdentifier,
+          },
+        };
+        deployPages.push(deploymentPage);
+        currentPageCounting++;
+        for (let input of page.inputs) {
+          if (input.global) {
+            this.globalVariables.push({ variableName: input.serverValue, variableValue: input.value });
+          }
+        }
+      }
+    }
+    return deployPages;
   }
 
   public async createWorkingFolders() {
@@ -25,56 +60,48 @@ export class DeploymentExecuter {
       }
     }
     Logger.info(`Workingfolder: ${workingFolders}`);
-    await this.getCommonFolder();
+    await this.copyCommonFolder();
     return workingFolders;
   }
 
-  private async startExecution(verb: string, mode: string, workingFolders: string[]) {
-    const totals = this.getTotals(this.domains);
-    for (let domainIndex = 0; domainIndex < this.domains.length; domainIndex++) {
-      for (let pageIndex = 0; pageIndex < this.domains[domainIndex].pages.length; pageIndex++) {
-        const page = this.domains[domainIndex].pages[pageIndex];
-        try {
-          totals.curentPage = totals.curentPage + 1;
-          const exitCode = await this.executeScript(
-            workingFolders[totals.curentPage - 1],
-            page,
-            this.deploymentIdentifier,
-            totals,
-            this.domains[domainIndex],
-            mode
-          );
-          const deploymentMessage: IDeploymentMessage = {
-            message: `${verb}: ${page.displayName} - Completed`,
-            progress: totals,
-            pageName: page.name,
-            domainName: this.domains[domainIndex].name,
-          };
-
-          if (exitCode || exitCode === 0) {
-            if (exitCode === 0) {
-              deploymentMessage.error = false;
-            } else {
-              deploymentMessage.error = true;
-            }
-            deploymentMessage.message = `${verb}: ${page.displayName} - Failed`;
-            deploymentMessage.final = true;
-            app.socketServer.sendMessage(this.deploymentIdentifier, deploymentMessage);
-          } else {
-            app.socketServer.sendMessage(this.deploymentIdentifier, deploymentMessage);
-          }
-        } catch (error) {
-          Logger.error(error.message, error.stack);
-          const deploymentMessage: IDeploymentMessage = {
-            message: `${verb} Failed, ${error.message}`,
-            final: true,
-            pageName: page.name,
-            domainName: this.domains[domainIndex].name,
-          };
-          app.socketServer.sendMessage(this.deploymentIdentifier, deploymentMessage);
-          return;
-        }
+  private async startExecution(deployPages: IDeploymentPage[]) {
+    for (let deployPage of deployPages) {
+      try {
+        deployPage.executionData.progress.totalPages = deployPages.length;
+        const exitCode = await this.executeScript(deployPage);
+        this.sendFinalMessage(exitCode, deployPage);
+      } catch (error) {
+        Logger.error(error.message, error.stack);
+        const deploymentMessage: IDeploymentMessage = {
+          message: `${deployPage.executionData.verb} Failed, ${error.message}`,
+          final: true,
+          pageName: deployPage.page.name,
+          domainName: deployPage.executionData.parentDomain.displayName,
+        };
+        app.socketServer.sendMessage(this.deploymentIdentifier, deploymentMessage);
+        return;
       }
+    }
+  }
+
+  private sendFinalMessage(exitCode: any, deployPage: IDeploymentPage) {
+    const deploymentMessage: IDeploymentMessage = {
+      message: `${deployPage.executionData.verb}: ${deployPage.page.displayName}`,
+      progress: deployPage.executionData.progress,
+      pageName: deployPage.page.name,
+      domainName: deployPage.executionData.parentDomain.displayName,
+    };
+    if (exitCode || exitCode === 0) {
+      if (exitCode === 0) {
+        deploymentMessage.error = false;
+      } else {
+        deploymentMessage.error = true;
+        deploymentMessage.message += "- Failed";
+      }
+      deploymentMessage.final = true;
+      app.socketServer.sendMessage(this.deploymentIdentifier, deploymentMessage);
+    } else {
+      app.socketServer.sendMessage(this.deploymentIdentifier, deploymentMessage);
     }
   }
 
@@ -127,37 +154,68 @@ export class DeploymentExecuter {
     return files;
   }
 
-  private getDeployemntExecuter(page: IPage, mode: string): IExecuter {
-    switch (page.executer) {
+  private async replaceUGlobalParameters(workingFolder: string) {
+    const fs = require("fs");
+    const util = require("util");
+    const readFile = util.promisify(fs.readFile);
+    const fs_writeFile = util.promisify(fs.writeFile);
+    const files = await this.getFiles(workingFolder);
+    for (const file of files) {
+      let content = await readFile(file.path, "utf8");
+      for (const globalVariable of this.globalVariables) {
+        try {
+          content = content.replace(`${globalVariable.variableName}`, `${globalVariable.variableValue}`);
+        } catch (error) {
+          Logger.error(error.message, error.stack);
+        }
+        await fs_writeFile(file.path, content, "utf-8");
+      }
+    }
+    return files;
+  }
+
+  private getDeployemntExecuter(deploymentPage: IDeploymentPage): IExecuter {
+    switch (deploymentPage.page.executer) {
       case "pwsh": {
-        return { executer: page.executer, file: `${mode}.ps1` };
+        return {
+          executer: deploymentPage.page.executer,
+          file: `${deploymentPage.executionData.deployMessage}.ps1`,
+        };
       }
       default: {
-        return { executer: "bash", file: `${mode}.sh` };
+        return { executer: "bash", file: `${deploymentPage.executionData.deployMessage}.sh` };
       }
     }
   }
 
-  private async getCommonFolder() {
-    const path = require("path");
-    const newFolder = path.join(__dirname, process.env.WORKING_ROOT, `common`);
-    const shell = require("shelljs");
-    shell.mkdir("-p", newFolder);
+  private async copyFolder(source: string[], target: string[]): Promise<{ source: string; target: string }> {
     const fs = require("fs-extra");
-    await fs.copy(path.join(__dirname, process.env.COMPONENTS_ROOT, 'common'), newFolder);
+    const path = require("path");
+    const shell = require("shelljs");
+    const targetFolder = path.join.apply(null, target);
+    const sourceFoldet = path.join.apply(null, source);
+    shell.mkdir("-p", targetFolder);
+    await fs.copy(sourceFoldet, targetFolder);
+    return { source: sourceFoldet, target: targetFolder };
+  }
+
+  private async copyCommonFolder() {
+    await this.copyFolder(
+      [__dirname, process.env.COMPONENTS_ROOT!, "common"],
+      [__dirname, process.env.WORKING_ROOT!, `common`]
+    );
   }
 
   private async backupWorkingFolder(page: IPage): Promise<string> {
-    const path = require("path");
-    const timeStamp = new Date().getMilliseconds();
-    const newFolder = path.join(__dirname,process.env.WORKING_ROOT, `${page.name}_${timeStamp}`);
-    const shell = require("shelljs");
-    shell.mkdir("-p", newFolder);
-    const fs = require("fs-extra");
     try {
-      await fs.copy(path.join(__dirname,process.env.COMPONENTS_ROOT, this.removedCloned(page.name)), newFolder);
-      await this.replaceUserParameters(newFolder, page);
-      return newFolder;
+      const timeStamp = new Date().getMilliseconds();
+      const result = await this.copyFolder(
+        [__dirname, process.env.COMPONENTS_ROOT!, this.removedCloned(page.name)],
+        [__dirname, process.env.WORKING_ROOT!, `${page.name}_${timeStamp}`]
+      );
+      await this.replaceUserParameters(result.target, page);
+      await this.replaceUGlobalParameters(result.target);
+      return result.target;
     } catch (err) {
       Logger.error(err.message, err.stack);
       throw new Error(err.message);
@@ -172,37 +230,46 @@ export class DeploymentExecuter {
     return pageName;
   }
 
-  private async executeScript(
-    workingFolder: string,
-    pageToExecute: IPage,
-    deploymentIdentifier: string,
-    totals: IDploymentProgress,
-    domain: IDomain,
-    mode: string
-  ) {
+  private addGlobalVariabels(): NodeJS.ProcessEnv {
+    const env = Object.create(process.env);
+    for (let globalVariable of this.globalVariables) {
+      const cleanName = globalVariable.variableName.substring(2, globalVariable.variableName.length - 1);
+      env[cleanName] = globalVariable.variableValue;
+    }
+    return env;
+  }
+
+  private async executeScript(pageToExecute: IDeploymentPage) {
     try {
-      const env = Object.create(process.env);
-      const executer = this.getDeployemntExecuter(pageToExecute, mode);
+      const workingFolder = pageToExecute.executionData.workingFolder;
+
+      const executer = this.getDeployemntExecuter(pageToExecute);
       const deploymentProcess = spawn(executer.executer, [`${workingFolder}/${executer.file}`], {
-        env: env,
-        cwd: workingFolder
+        env: this.addGlobalVariabels(),
+        cwd: workingFolder,
       });
       const deploymentMessage: IDeploymentMessage = {
-        message: `Deploying: ${pageToExecute.displayName}`,
-        progress: totals,
-        pageName: pageToExecute.name,
-        domainName: domain.name,
+        message: `Deploying: ${pageToExecute.page.displayName}`,
+        progress: pageToExecute.executionData.progress,
+        pageName: pageToExecute.page.name,
+        domainName: pageToExecute.executionData.parentDomain.name,
       };
       deploymentProcess.stdout.setEncoding("utf-8");
       deploymentProcess.stdout.on("data", function (log) {
         deploymentMessage.log = log;
-        app.socketServer.sendMessage(deploymentIdentifier, deploymentMessage);
+        if (DeploymentExecuter.killRequested) {
+          Logger.info("kill requested");
+          DeploymentExecuter.killRequested = false;
+          deploymentProcess.kill();
+          return -1;
+        }
+        app.socketServer.sendMessage(pageToExecute.executionData.deploymentIdentifier, deploymentMessage);
       });
       deploymentProcess.stderr.setEncoding("utf-8");
       deploymentProcess.stderr.on("data", function (log) {
         deploymentMessage.log = log;
         deploymentMessage.error = true;
-        app.socketServer.sendMessage(deploymentIdentifier, deploymentMessage);
+        app.socketServer.sendMessage(pageToExecute.executionData.deploymentIdentifier, deploymentMessage);
         deploymentProcess.kill();
       });
       const exitCode = await new Promise((resolve, reject) => {
@@ -226,7 +293,7 @@ export class DeploymentExecuter {
       });
     });
 
-    return { totalDomains: totalDomains, totalPages: totalPages, curentPage: 0 };
+    return { totalDomains: totalDomains, totalPages: totalPages, currentPage: 0 };
   }
 
   private async deleteFolder(workingFolder: string) {

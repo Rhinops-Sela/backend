@@ -6,6 +6,7 @@ import { IDeploymentMessage } from "../interfaces/IDeploymentMessage";
 import { Logger } from "../logger/logger";
 import { Retryable } from "typescript-retry-decorator";
 import { timingSafeEqual } from "crypto";
+import { DeploymentExecuter } from "../workers/deployment-worker";
 const cors = require("cors");
 
 export class DeploymentServer {
@@ -27,6 +28,10 @@ export class DeploymentServer {
     this.io.on(DeploymentEvent.CONNECT, (socket: any) => {
       Logger.info(`Connected client on port: ${this.port}`);
       this.socket = socket;
+      socket.on(DeploymentEvent.KILL, () => {
+        DeploymentExecuter.killRequested = true;
+        Logger.info("New Client Message");
+      });
       socket.on(DeploymentEvent.DISCONNECT, () => {
         Logger.info("Client disconnected");
       });

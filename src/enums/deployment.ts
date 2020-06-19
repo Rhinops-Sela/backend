@@ -1,5 +1,6 @@
 export enum DeploymentEvent {
   CONNECT = "connect",
   DISCONNECT = "disconnect",
-  MESSAGE = "message"
+  MESSAGE = "message",
+  KILL = "kill"
 }

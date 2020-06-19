@@ -9,5 +9,6 @@ export interface IInput {
   value?: any;
   required?: boolean;
   serverValue: string;
-  id?: string;
+  id?: string,
+  global?: boolean;
 }
