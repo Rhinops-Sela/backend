@@ -1,0 +1,33 @@
+{
+  "name": "elasticsearch",
+  "mandatory": false,
+  "displayName": "ES",
+  "image": "assets/component_logos/elasticsearch.png",
+  "description": "ES configuration & parameters",
+  "inputs": [
+    {
+      "template": "cluster-name"
+    },
+    {
+      "template": "namespace"
+    },
+    {
+      "template": "master-nodes"
+    },
+    {
+      "template": "slave-nodes"
+    },
+    {
+      "template": "instance-select",
+      "tooltip": "Selecte ES cluster instance type",
+      "options": [
+        "m5.xlrarge",
+        "m5.large",
+        "m5.2xlrarge"
+      ]
+    },
+    {
+      "template": "spot"
+    }
+  ]
+}

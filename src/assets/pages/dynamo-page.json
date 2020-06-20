@@ -1,0 +1,28 @@
+{
+  "name": "dynamo",
+  "displayName": "DynamoDB",
+  "image": "assets/component_logos/dynamo.png",
+  "description": "DynamoDB configuration & parameters",
+  "inputs": [
+    {
+      "controlType": "text",
+      "tooltip": "Please select the namespace",
+      "displayName": "Namespace",
+      "regexValidation": ".*",
+      "serverValue": "${NAMESPACE}"
+    },
+    {
+      "controlType": "text",
+      "tooltip": "Connection Port",
+      "displayName": "Port",
+      "regexValidation": "^[0-9]*$",
+      "serverValue": "${PORT}"
+    },
+    {
+      "controlType": "checkbox",
+      "tooltip": "Use Persistent Data?",
+      "displayName": "Use Persistent Data?",
+      "serverValue": "${PERSISTANT_DATA}"
+    }
+  ]
+}

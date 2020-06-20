@@ -1,0 +1,37 @@
+{
+  "name": "cluster",
+  "stderrFail": true,
+  "executer": "pwsh",
+  "deletable": false,
+  "mandatory": false,
+  "displayName": "Cluster Definition",
+  "image": "assets/component_logos/k8s.png",
+  "description": "Please provide cluster information, if cluster doesn't exists it will be created",
+  "inputs": [
+    {
+      "template": "cluster-name"
+    },
+    {
+      "template": "region",
+      "serverValue": "${CLUSTER_REGION}"
+    },
+    {
+      "controlType": "checkbox",
+      "tooltip": "Install Dashboard?",
+      "displayName": "Install Dashboard?",
+      "serverValue": "${DASHBOARD}"
+    },
+    {
+      "controlType": "checkbox",
+      "tooltip": "Cluster autoscaler automatically scales the nodes in a nodegroup",
+      "displayName": "Install Cluster Autoscaler?",
+      "serverValue": "${CLUSTER_AUTO_SCALE}"
+    },
+    {
+      "controlType": "checkbox",
+      "tooltip": "Pods will be able to scale horizontally (more/less pods)",
+      "displayName": "Install Pod horizontal autoscaling (HPA)?",
+      "serverValue": "${POD_HORIZONTAL_AUTO_SCALE}"
+    }
+  ]
+}

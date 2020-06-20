@@ -1,0 +1,35 @@
+{
+  "name": "nodegroup",
+  "displayName": "NodeGroup",
+  "mandatory": false,
+  "image": "assets/component_logos/k8s.png",
+  "description": "Please Provide Information Regarding The NodGroup",
+  "repeatable": true,
+  "inputs": [
+    {
+      "controlType": "text",
+      "tooltip": "Node Group Name",
+      "displayName": "Name",
+      "regexValidation": ".*",
+      "serverValue": "${NAME}"
+    },
+    {
+      "template": "autoscaling-maximum"
+    },
+    {
+      "template": "autoscaling-minimum"
+    },
+    {
+      "template": "autoscaling-desired"
+    },
+    {
+      "template": "spot"
+    },
+    {
+      "controlType": "textarea",
+      "tooltip": "Please provide list of node taints",
+      "displayName": "Taints",
+      "serverValue": "${TAINTS}"
+    }
+  ]
+}

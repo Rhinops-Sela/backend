@@ -1,0 +1,38 @@
+{
+  "name": "prometheus",
+  "displayName": "Prometheus",
+  "image": "assets/component_logos/prometheus.png",
+  "description": "Prometheus configuration & parameters",
+  "inputs": [
+    {
+      "controlType": "text",
+      "tooltip": "Sender Address",
+      "displayName": "From Email",
+      "serverValue": "${FROM}",
+      "regexValidation": ".*"
+    },
+    {
+      "controlType": "text",
+      "tooltip": "Email address of the reciever",
+      "displayName": "To Email",
+      "serverValue": "${TO}",
+      "regexValidation": ".*"
+    },
+    {
+      "controlType": "text",
+      "tooltip": "SMTP",
+      "displayName": "SMTP",
+      "serverValue": "${TO}",
+      "regexValidation": ".*"
+    },
+    {
+      "template": "username",
+      "tooltip": "SMTP username"
+    },
+    {
+      "template": "username",
+      "tooltip": "SMTP password",
+      "displayName": "Password"
+    }
+  ]
+}

@@ -19,8 +19,9 @@
       "env": {
         "COMPONENTS_ROOT": "../../../components",
         "WORKING_ROOT": "../../../working_folder",
-        "MAIN_TEMPLATE_FORM": "../assets/form/main.json",
-        "FORM_TEMPLATES_FOLDER": "../assets/templates"
+        "MAIN_TEMPLATE_FORM": "../assets/form/development-form.json",
+        "FORM_PAGES_FOLDER": "../assets/pages",
+        "FORM_INPUTS_FOLDER": "../assets/inputs"
       }
     }
   ]

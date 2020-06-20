@@ -1,0 +1,25 @@
+{
+  "name": "datadog",
+  "displayName": "Datadog Logging",
+  "image": "assets/component_logos/datadog.png",
+  "description": "Datadog configuration & parameters",
+  "inputs": [
+    {
+      "template": "namespace"
+    },
+    {
+      "template": "password",
+      "tooltip": "Datadog password"
+    },
+    {
+      "template": "port"
+    },
+    {
+      "controlType": "text",
+      "tooltip": "List of namespaces to be ignored for log shipping (comma seperated)",
+      "displayName": "Ignored Namespaces",
+      "regexValidation": ".*",
+      "serverValue": "${IGNORED_NAMESPACES}"
+    }
+  ]
+}

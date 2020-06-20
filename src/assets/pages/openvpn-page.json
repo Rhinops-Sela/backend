@@ -1,0 +1,15 @@
+{
+  "name": "openvpn",
+  "displayName": "VPN",
+  "image": "assets/component_logos/openvpn.png",
+  "description": "Please provide a list of users to be able to access the network",
+  "inputs": [
+    {
+      "controlType": "textarea",
+      "tooltip": "Please provide comma (,) separated list of users",
+      "displayName": "List of VPN users",
+      "serverValue": "${USERS}",
+      "regexValidation": ".*"
+    }
+  ]
+}

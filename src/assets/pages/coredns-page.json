@@ -1,0 +1,16 @@
+{
+  "name": "core-dns",
+  "domain": "network-domain",
+  "displayName": "DNS",
+  "image": "assets/component_logos/dns.png",
+  "description": "Set of A / CNAME records to be accessible while connected to VPN",
+  "inputs": [
+    {
+      "controlType": "textarea",
+      "tooltip": "Please provide comma (,) separated list of A/CNMAE records (foo.io foo.namespace.svc.cluster.local)",
+      "displayName": "DNS Records",
+      "serverValue": "${DNS_RECORDS}",
+      "regexValidation": ".*"
+    }
+  ]
+}

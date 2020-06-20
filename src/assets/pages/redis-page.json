@@ -1,0 +1,32 @@
+{
+  "name": "redis",
+  "displayName": "Redis",
+  "image": "assets/component_logos/redis.png",
+  "description": "Redis configuration & parameters",
+  "inputs": [
+    {
+      "template": "cluster-name"
+    },
+    {
+      "template": "namespace"
+    },
+    {
+      "template": "master-nodes"
+    },
+    {
+      "template": "slave-nodes"
+    },
+    {
+      "template": "instance-select",
+      "tooltip": "Selecte Redis cluster instance type",
+      "options": [
+        "m5.xlrarge",
+        "m5.large",
+        "m5.2xlrarge"
+      ]
+    },
+    {
+      "template": "spot"
+    }
+  ]
+}

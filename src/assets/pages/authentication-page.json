@@ -1,0 +1,34 @@
+{
+  "name": "authentiction",
+  "deletable": false,
+  "mandatory": true,
+  "displayName": "AWS Credentials",
+  "image": "assets/component_logos/aws.png",
+  "description": "AWS credentials for connecting to the cluster",
+  "inputs": [
+    {
+      "controlType": "text",
+      "tooltip": "AWS Access Key",
+      "displayName": "Access Key",
+      "regexValidation": ".*",
+      "serverValue": "${AWS_ACCESS_KEY_ID}",
+      "global": true
+    },
+    {
+      "controlType": "text-password",
+      "tooltip": "AWS Secret Access Key",
+      "displayName": "Secret Access Key",
+      "regexValidation": ".*",
+      "serverValue": "${AWS_SECRET_ACCESS_KEY}",
+      "global": true
+    },
+    {
+      "controlType": "text",
+      "tooltip": "AWS region for components creation",
+      "displayName": "Region",
+      "regexValidation": ".*",
+      "serverValue": "${AWS_DEFAULT_REGION}",
+      "global": true
+    }
+  ]
+}

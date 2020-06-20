@@ -1,4 +1,4 @@
-export interface ITemplate {
+export interface IInputTemplate {
   templateName: string,
   templatePath: string
 }

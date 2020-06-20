@@ -1,0 +1,49 @@
+[
+  {
+    "name": "authentiction",
+    "description": "AWS Authentication Credentilas For Resource Creation",
+    "displayName": "Authentication",
+    "pages": [
+      "authentication-page"
+    ]
+  },
+  {
+    "name": "cluster",
+    "description": "EKS cluster configuration",
+    "displayName": "Cluster",
+    "pages": [
+      "cluster-page",
+      "nodegroup-page"
+    ]
+  },
+  {
+    "name": "monitoring",
+    "description": "Configuration & Parameters for monitoring the cluster",
+    "displayName": "Monitoring",
+    "pages": [
+      "grafana-page",
+      "prometheus-page",
+      "datadog-page"
+    ]
+  },
+  {
+    "name": "network",
+    "description": "Networking configuration for the cluster",
+    "displayName": "Networking",
+    "pages": [
+      "coredns-page",
+      "openvpn-page",
+      "nginx-page"
+    ]
+  },
+  {
+    "name": "databases",
+    "displayName": "Databases",
+    "description": "Selection of databases to available in the cluster",
+    "pages": [
+      "redis-page",
+      "dynamo-page",
+      "elasticsearch-page"
+    ]
+  }
+]
