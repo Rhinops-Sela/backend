@@ -1,6 +1,6 @@
-import { IDeploymentPage } from "../interfaces/IDeploymentPage";
-import { IDeploymentMessage } from "../interfaces/IDeploymentMessage";
-import { IDploymentProgress } from "../interfaces/IDploymentProgress";
+import { IDeploymentPage } from "../interfaces/server/IDeploymentPage";
+import { IDeploymentMessage } from "../interfaces/common/IDeploymentMessage";
+import { IDploymentProgress } from "../interfaces/common/IDploymentProgress";
 
 export  class DeploymentMessage implements IDeploymentMessage {
   log: any;

@@ -1,5 +1,5 @@
 import { DeploymentMessage } from "./deployment-message";
-import { IDeploymentPage } from "../interfaces/IDeploymentPage";
+import { IDeploymentPage } from "../interfaces/server/IDeploymentPage";
 
 export class ErrordMessage extends DeploymentMessage {
   constructor(deploymentPage: IDeploymentPage, excpetionMessage?: any) {

@@ -1,9 +1,9 @@
-import { IDomain } from "./../interfaces/IDomain";
+import { IDomain } from "../interfaces/common/IDomain";
 const readFilePromise = require("fs-readfile-promise");
-import { IInputTemplate } from "../interfaces/ITemplate";
+import { IInputTemplate } from "../interfaces/server/ITemplate";
 import path from "path";
 import { Logger } from "../logger/logger";
-import { IPage } from "../interfaces/IPage";
+import { IPage } from "../interfaces/common/IPage";
 export class FormParser {
   public static async getForm(): Promise<IDomain[]> {
     const fs = require("fs");

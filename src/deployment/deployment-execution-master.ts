@@ -1,9 +1,9 @@
-import { IDeploymentPage } from "../interfaces/IDeploymentPage";
-import { IExecuter } from "../interfaces/IExecuter";
+import { IDeploymentPage } from "../interfaces/server/IDeploymentPage";
+import { IExecuter } from "../interfaces/server/IExecuter";
 import { spawn, ChildProcessWithoutNullStreams } from "child_process";
 import app from "../app";
 import pathJoin from "path";
-import { IGlobalVariable } from "../interfaces/IGlobalVariable";
+import { IGlobalVariable } from "../interfaces/server/IGlobalVariable";
 import { ErrordMessage } from "../messages/error-message";
 import { Logger } from "../logger/logger";
 import { DeploymentMessage } from "../messages/deployment-message";

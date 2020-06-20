@@ -1,5 +1,5 @@
-import { IDomain } from './IDomain';
-import { IDploymentProgress } from './IDploymentProgress';
+import { IDomain } from '../common/IDomain';
+import { IDploymentProgress } from '../common/IDploymentProgress';
 export interface IPageExecutionData {
   deploymentIdentifier:string;
   createMode: boolean;

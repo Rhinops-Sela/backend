@@ -1,4 +1,4 @@
-import { ILogMessage } from "../interfaces/ILogMessage";
+import { ILogMessage } from "../interfaces/server/ILogMessage";
 
 export class Logger {
   public static logLevel = process.env.LOG_ENV || 0;

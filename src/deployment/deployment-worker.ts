@@ -1,12 +1,12 @@
 import { CompletedMessage } from './../messages/completed-message';
 import { ErrordMessage } from "../messages/error-message";
-import { IGlobalVariable } from "../interfaces/IGlobalVariable";
-import { IDeploymentPage } from "../interfaces/IDeploymentPage";
-import { IDomain } from "../interfaces/IDomain";
-import { IPage } from "../interfaces/IPage";
+import { IGlobalVariable } from "../interfaces/server/IGlobalVariable";
+import { IDeploymentPage } from "../interfaces/server/IDeploymentPage";
+import { IDomain } from "../interfaces/common/IDomain";
+import { IPage } from "../interfaces/common/IPage";
 import { Logger } from "../logger/logger";
 import app from "../app";
-import { IExecuter } from "../interfaces/IExecuter";
+import { IExecuter } from "../interfaces/server/IExecuter";
 import { DeploymentExecutionMaster } from "./deployment-execution-master";
 export class DeploymentExecuter {
   private globalVariables: IGlobalVariable[] = [];

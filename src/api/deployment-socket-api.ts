@@ -1,7 +1,7 @@
 import { createServer, Server } from "http";
 import socketIo from "socket.io";
 import { DeploymentEvent } from "../enums/deployment";
-import { IDeploymentMessage } from "../interfaces/IDeploymentMessage";
+import { IDeploymentMessage } from "../interfaces/common/IDeploymentMessage";
 import { Logger } from "../logger/logger";
 import { DeploymentExecutionMaster } from "../deployment/deployment-execution-master";
 const cors = require("cors");
