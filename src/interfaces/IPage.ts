@@ -11,4 +11,5 @@ export interface IPage {
   id?: string;
   modified?: boolean;
   mandatory?: boolean;
+  stderrFail?: boolean;
 }

@@ -44,8 +44,10 @@ export class DeploymentExecutionMaster {
     deploymentProcess.stderr.on("data", function (log) {
       pageToExecute.executionData.log = log;
       app.socketServer.sendMessage(pageToExecute.executionData.deploymentIdentifier, new ErrordMessage(pageToExecute));
-      DeploymentExecutionMaster.exitCode = -1;
-      DeploymentExecutionMaster.killProcess(pageToExecute, deploymentProcess);
+      if (pageToExecute.page.stderrFail) {
+        DeploymentExecutionMaster.exitCode = -1;
+        DeploymentExecutionMaster.killProcess(pageToExecute, deploymentProcess);
+      }
     });
 
     return deploymentProcess;

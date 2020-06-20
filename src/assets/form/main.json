@@ -48,6 +48,7 @@
     "pages": [
       {
         "name": "cluster",
+        "stderrFail": true,
         "executer": "pwsh",
         "deletable": false,
         "mandatory": false,
