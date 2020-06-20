@@ -23,6 +23,18 @@
       "template": "autoscaling-desired"
     },
     {
+      "template": "autoscaling-desired"
+    },
+    {
+      "template": "autoscaling-desired"
+    },
+    {
+      "template": "autoscaling-desired"
+    },
+    {
+      "template": "autoscaling-desired"
+    },
+    {
       "template": "spot"
     },
     {

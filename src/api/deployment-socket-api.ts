@@ -25,9 +25,9 @@ export class DeploymentServer {
     this.io.on(DeploymentEvent.CONNECT, (socket: any) => {
       Logger.info(`Connected client on port: ${this.port}`);
       this.socket = socket;
-      socket.on(DeploymentEvent.KILL, () => {
-        DeploymentExecutionMaster.killRequested = true;
-        Logger.info("New Client Message");
+      socket.on(DeploymentEvent.KILL, (deploymentIdetifier:string) => {
+        DeploymentExecutionMaster.killProcess(deploymentIdetifier);
+        Logger.info("Kill Process Requested");
       });
       socket.on(DeploymentEvent.DISCONNECT, () => {
         Logger.info("Client disconnected");

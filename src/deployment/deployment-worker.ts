@@ -1,4 +1,5 @@
-import { CompletedMessage } from './../messages/completed-message';
+import { ChildProcessWithoutNullStreams } from "child_process";
+import { CompletedMessage } from "./../messages/completed-message";
 import { ErrordMessage } from "../messages/error-message";
 import { IGlobalVariable } from "../interfaces/server/IGlobalVariable";
 import { IDeploymentPage } from "../interfaces/server/IDeploymentPage";
@@ -8,8 +9,10 @@ import { Logger } from "../logger/logger";
 import app from "../app";
 import { IExecuter } from "../interfaces/server/IExecuter";
 import { DeploymentExecutionMaster } from "./deployment-execution-master";
+import { IDeploymentProcess } from "../interfaces/server/IDeploymentProcess";
 export class DeploymentExecuter {
   private globalVariables: IGlobalVariable[] = [];
+  
   constructor(public domains: IDomain[], public deploymentIdentifier: string) {}
   public async startDeletion(workingFolders: string[]) {
     const deployPages = this.flattenDomains("Deleting", "delete", workingFolders);
@@ -87,7 +90,6 @@ export class DeploymentExecuter {
     app.socketServer.sendMessage(this.deploymentIdentifier, deploymentMessage);
   }
 
-
   private getDeployemntExecuter(deploymentPage: IDeploymentPage): IExecuter {
     switch (deploymentPage.page.executer) {
       case "pwsh": {
@@ -154,7 +156,7 @@ export class DeploymentExecuter {
         Logger.error(error.message, error.stack);
       });
       await this.deleteFolder(workingFolder);
-      return DeploymentExecutionMaster.exitCode;
+      return deploymentExecutionMaster.exitCode;
     } catch (error) {
       Logger.error(error.message, error.stack);
     }

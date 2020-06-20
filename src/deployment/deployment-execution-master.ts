@@ -7,9 +7,10 @@ import { IGlobalVariable } from "../interfaces/server/IGlobalVariable";
 import { ErrordMessage } from "../messages/error-message";
 import { Logger } from "../logger/logger";
 import { DeploymentMessage } from "../messages/deployment-message";
+import { IDeploymentProcess } from "../interfaces/server/IDeploymentProcess";
 export class DeploymentExecutionMaster {
-  static killRequested: boolean;
-  public static exitCode = 0;
+  public static deploymentProcesses: IDeploymentProcess[] = [];
+  public exitCode = 0;
   private globalVariables: IGlobalVariable[] = [];
   constructor(globalVariables: IGlobalVariable[]) {
     this.globalVariables = globalVariables;
@@ -29,15 +30,16 @@ export class DeploymentExecutionMaster {
         cwd: pageToExecute.executionData.workingFolder,
       }
     );
+    DeploymentExecutionMaster.deploymentProcesses.push({
+      identifier: pageToExecute.executionData.deploymentIdentifier,
+      process: deploymentProcess,
+    });
     deploymentProcess.stdout.setEncoding("utf-8");
     deploymentProcess.stderr.setEncoding("utf-8");
+    const that = this;
     deploymentProcess.stdout.on("data", function (log) {
       pageToExecute.executionData.log = log;
       const deploymentMessage = new DeploymentMessage(pageToExecute);
-      if (DeploymentExecutionMaster.killRequested) {
-        DeploymentExecutionMaster.killProcess(pageToExecute, deploymentProcess);
-        DeploymentExecutionMaster.exitCode = -1;
-      }
       app.socketServer.sendMessage(pageToExecute.executionData.deploymentIdentifier, deploymentMessage);
     });
 
@@ -45,8 +47,8 @@ export class DeploymentExecutionMaster {
       pageToExecute.executionData.log = log;
       app.socketServer.sendMessage(pageToExecute.executionData.deploymentIdentifier, new ErrordMessage(pageToExecute));
       if (pageToExecute.page.stderrFail) {
-        DeploymentExecutionMaster.exitCode = -1;
-        DeploymentExecutionMaster.killProcess(pageToExecute, deploymentProcess);
+        that.exitCode = -1;
+        DeploymentExecutionMaster.killProcess(pageToExecute.executionData.deploymentIdentifier);
       }
     });
 
@@ -62,14 +64,14 @@ export class DeploymentExecutionMaster {
     return env;
   }
 
-  private static killProcess(pageToExecute: IDeploymentPage, deploymentProcess: any) {
+  public static killProcess(deploymentProcessIdentifier: string) {
     Logger.info("kill requested");
     var kill = require("tree-kill");
-    deploymentProcess.stdin.pause();
-    DeploymentExecutionMaster.killRequested = false;
-    kill(deploymentProcess.pid);
-    app.socketServer.sendMessage(pageToExecute.executionData.deploymentIdentifier, new ErrordMessage(pageToExecute));
-    return -1;
+    DeploymentExecutionMaster.deploymentProcesses.find((deploymentProcess) => {
+      if (deploymentProcess.identifier === deploymentProcessIdentifier) {
+        kill(deploymentProcess.process.pid);
+      }
+    });
   }
 
   private async replaceUserParameters(pageToExecute: IDeploymentPage) {
