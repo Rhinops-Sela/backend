@@ -6,6 +6,7 @@ export class ErrordMessage extends DeploymentMessage {
     super(deploymentPage);
     this.final = true;
     this.error = true;
+    this.log = "Deployment Failed!"
     if (excpetionMessage) {
       this.log += ` - excpetion: ${excpetionMessage.message} stack: ${excpetionMessage.stack}`;
     }
