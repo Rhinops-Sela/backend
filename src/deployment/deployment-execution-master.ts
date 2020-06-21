@@ -66,12 +66,16 @@ export class DeploymentExecutionMaster {
 
   public static killProcess(deploymentProcessIdentifier: string) {
     Logger.info("kill requested");
+    const newDeploymentProcesses: IDeploymentProcess[] = [];
     var kill = require("tree-kill");
-    DeploymentExecutionMaster.deploymentProcesses.find((deploymentProcess) => {
+    for (let deploymentProcess of DeploymentExecutionMaster.deploymentProcesses) {
       if (deploymentProcess.identifier === deploymentProcessIdentifier) {
         kill(deploymentProcess.process.pid);
+      } else {
+        newDeploymentProcesses.push(deploymentProcess);
       }
-    });
+    }
+    DeploymentExecutionMaster.deploymentProcesses = newDeploymentProcesses;
   }
 
   private async replaceUserParameters(pageToExecute: IDeploymentPage) {
