@@ -8,8 +8,12 @@ import { ErrordMessage } from "../messages/error-message";
 import { Logger } from "../logger/logger";
 import { DeploymentMessage } from "../messages/deployment-message";
 import { IDeploymentProcess } from "../interfaces/server/IDeploymentProcess";
+import { ILogLine } from "../interfaces/common/ILogLine";
+import { LogLine } from "./logline-message";
+import { ErrorLogLine } from "./logline-error";
 export class DeploymentExecutionMaster {
   public static deploymentProcesses: IDeploymentProcess[] = [];
+  private logLines: ILogLine[] = [];
   public exitCode = 0;
   private globalVariables: IGlobalVariable[] = [];
   constructor(globalVariables: IGlobalVariable[]) {
@@ -38,13 +42,19 @@ export class DeploymentExecutionMaster {
     deploymentProcess.stderr.setEncoding("utf-8");
     const that = this;
     deploymentProcess.stdout.on("data", function (log) {
-      pageToExecute.executionData.log = log;
-      const deploymentMessage = new DeploymentMessage(pageToExecute);
-      app.socketServer.sendMessage(pageToExecute.executionData.deploymentIdentifier, deploymentMessage);
+      if (log.trim()) {
+        pageToExecute.executionData.logs.push(new LogLine(log));
+      }
+      app.socketServer.sendMessage(
+        pageToExecute.executionData.deploymentIdentifier,
+        new DeploymentMessage(pageToExecute)
+      );
     });
 
     deploymentProcess.stderr.on("data", function (log) {
-      pageToExecute.executionData.log = log;
+      if (log.trim()) {
+        pageToExecute.executionData.logs.push(new ErrorLogLine(log));
+      }
       app.socketServer.sendMessage(pageToExecute.executionData.deploymentIdentifier, new ErrordMessage(pageToExecute));
       if (pageToExecute.page.stderrFail) {
         that.exitCode = -1;

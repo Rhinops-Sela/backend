@@ -10,20 +10,21 @@ import app from "../app";
 import { IExecuter } from "../interfaces/server/IExecuter";
 import { DeploymentExecutionMaster } from "./deployment-execution-master";
 import { IDeploymentProcess } from "../interfaces/server/IDeploymentProcess";
+import { LogLine } from "./logline-message";
 export class DeploymentExecuter {
   private globalVariables: IGlobalVariable[] = [];
-  
+
   constructor(public domains: IDomain[], public deploymentIdentifier: string) {}
   public async startDeletion(workingFolders: string[]) {
     const deployPages = this.flattenDomains("Deleting", "delete", workingFolders);
     return await this.startExecution(deployPages);
   }
   public async startDeployment(workingFolders: string[]) {
-    const deployPages = this.flattenDomains("Deplopyment", "create", workingFolders);
+    const deployPages = this.flattenDomains("Starting Deployment", "create", workingFolders);
     return await this.startExecution(deployPages);
   }
 
-  private flattenDomains(verb: string, deployMessage: string, workingFolders: string[]): IDeploymentPage[] {
+  private flattenDomains(deployMessage: string, verb: string, workingFolders: string[]): IDeploymentPage[] {
     const deployPages: IDeploymentPage[] = [];
     let currentPageCounting = 0;
     for (let domain of this.domains) {
@@ -36,7 +37,7 @@ export class DeploymentExecuter {
             parentDomain: domain,
             progress: { currentPage: currentPageCounting + 1, totalDomains: this.domains.length },
             verb: verb,
-            log: deployMessage,
+            logs: [new LogLine(deployMessage)],
             deploymentIdentifier: this.deploymentIdentifier,
           },
         };
@@ -82,6 +83,7 @@ export class DeploymentExecuter {
 
   private sendFinalMessage(exitCode: any, deployPage: IDeploymentPage) {
     let deploymentMessage;
+    deployPage.executionData.final = true;
     if (exitCode === 0) {
       deploymentMessage = new CompletedMessage(deployPage);
     } else {
@@ -95,11 +97,11 @@ export class DeploymentExecuter {
       case "pwsh": {
         return {
           executer: deploymentPage.page.executer,
-          file: `${deploymentPage.executionData.log}.ps1`,
+          file: `${deploymentPage.executionData.verb}.ps1`,
         };
       }
       default: {
-        return { executer: "bash", file: `${deploymentPage.executionData.log}.sh` };
+        return { executer: "bash", file: `${deploymentPage.executionData.verb}.sh` };
       }
     }
   }

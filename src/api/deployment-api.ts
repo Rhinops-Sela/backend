@@ -13,18 +13,18 @@ export let validateJson = async (req: Request, res: Response, next: any) => {
 
 export let startDeployment = async (req: Request, res: Response, next: any) => {
   try {
-    const delteMode = req.body.delete || false;
+    const deleteMode = req.body.deleteMode || false;
     const deploymentIdentifier = `deploymentUpdate-${new Date().toISOString()}`;
     const deploymentExecuter = new DeploymentExecuter(req.body.form, deploymentIdentifier);
     const workingFolders = await deploymentExecuter.createWorkingFolders();
     if (req.query.wait) {
-      if (delteMode) {
+      if (deleteMode) {
         await deploymentExecuter.startDeletion(workingFolders);
       } else {
         await deploymentExecuter.startDeployment(workingFolders);
       }
     } else {
-      if (delteMode) {
+      if (deleteMode) {
         deploymentExecuter.startDeletion(workingFolders);
       } else {
         deploymentExecuter.startDeployment(workingFolders);
