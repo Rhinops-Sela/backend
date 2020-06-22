@@ -29,6 +29,13 @@ export class DeploymentExecuter {
     let currentPageCounting = 0;
     for (let domain of this.domains) {
       for (let page of domain.pages) {
+        for (let input of page.inputs) {
+          if (!input.value) {
+            if (input.defaultValue != null) {
+              input.value = input.defaultValue;
+            }
+          }
+        }
         const deploymentPage = {
           page,
           executionData: {
@@ -157,7 +164,7 @@ export class DeploymentExecuter {
       }).catch((error) => {
         Logger.error(error.message, error.stack);
       });
-      await this.deleteFolder(workingFolder);
+      // await this.deleteFolder(workingFolder);
       return deploymentExecutionMaster.exitCode;
     } catch (error) {
       Logger.error(error.message, error.stack);

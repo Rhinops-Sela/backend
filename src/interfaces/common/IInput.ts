@@ -7,8 +7,9 @@ export interface IInput {
   errorMessage?: string;
   options?: string[];
   value?: any;
+  defaultValue?: any;
   required?: boolean;
   serverValue: string;
-  id?: string,
+  id?: string;
   global?: boolean;
 }

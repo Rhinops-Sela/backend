@@ -1,0 +1,7 @@
+{
+  "controlType": "checkbox",
+  "tooltip": "Nodes will not be assigned woth public ip address",
+  "displayName": "Use Private Network?",
+  "serverValue": "${PRIVATE_NETWORK}",
+  "defaultValue": true
+}

@@ -33,7 +33,13 @@
       ]
     },
     {
+      "template": "private-network"
+    },
+    {
       "template": "spot"
+    },
+    {
+      "template": "spot-allocation"
     },
     {
       "controlType": "text",
@@ -41,9 +47,6 @@
       "displayName": "On-Demand Instances",
       "regexValidation": "^[0-9]*$",
       "serverValue": "${ON_DEMAND_INSTANCES}"
-    },
-    {
-      "template": "spot-allocation"
     },
     {
       "template": "taints"

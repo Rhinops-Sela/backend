@@ -1,5 +1,5 @@
 {
-  "controlType": "multi-select",
+  "controlType": "select",
   "displayName": "Spot Allocation Strategy",
   "options": [
     "capacity-optimized",
