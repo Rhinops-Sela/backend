@@ -18,6 +18,13 @@
       "global": true
     },
     {
+      "controlType": "text",
+      "tooltip": "Admin ARN",
+      "displayName": "Admin ARN",
+      "regexValidation": ".*",
+      "serverValue": "${AWS_ADMIN_USER}"
+    },
+    {
       "controlType": "checkbox",
       "tooltip": "Install Dashboard?",
       "displayName": "Install Dashboard?",
