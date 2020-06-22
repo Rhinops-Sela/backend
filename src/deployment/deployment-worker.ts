@@ -164,7 +164,7 @@ export class DeploymentExecuter {
       }).catch((error) => {
         Logger.error(error.message, error.stack);
       });
-      // await this.deleteFolder(workingFolder);
+      await this.deleteFolder(workingFolder);
       return deploymentExecutionMaster.exitCode;
     } catch (error) {
       Logger.error(error.message, error.stack);
