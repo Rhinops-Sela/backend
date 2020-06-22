@@ -9,11 +9,13 @@
   "description": "Please provide cluster information, if cluster doesn't exists it will be created",
   "inputs": [
     {
-      "template": "cluster-name"
+      "template": "cluster-name",
+      "global": true
     },
     {
       "template": "region",
-      "serverValue": "${CLUSTER_REGION}"
+      "serverValue": "${CLUSTER_REGION}",
+      "global": true
     },
     {
       "controlType": "checkbox",

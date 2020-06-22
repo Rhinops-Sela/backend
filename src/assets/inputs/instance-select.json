@@ -7,5 +7,5 @@
     "m5.2xlrarge"
   ],
   "regexValidation": ".*",
-  "serverValue": "${INSTANCE_TYPE}"
+  "serverValue": "${INSTANCE_TYPES}"
 }

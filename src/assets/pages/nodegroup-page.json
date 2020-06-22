@@ -1,5 +1,6 @@
 {
   "name": "nodegroup",
+  "executer": "pwsh",
   "displayName": "NodeGroup",
   "mandatory": false,
   "image": "assets/component_logos/k8s.png",
@@ -23,25 +24,35 @@
       "template": "autoscaling-desired"
     },
     {
-      "template": "autoscaling-desired"
-    },
-    {
-      "template": "autoscaling-desired"
-    },
-    {
-      "template": "autoscaling-desired"
-    },
-    {
-      "template": "autoscaling-desired"
+      "template": "instance-select"
     },
     {
       "template": "spot"
     },
     {
+      "controlType": "text",
+      "tooltip": "Connection Port",
+      "displayName": "On-Demand Instances",
+      "regexValidation": "^[0-9]*$",
+      "serverValue": "${ON_DEMAND_INSTANCES}"
+    },
+    {
+      "template": "spot-allocation"
+    },
+    {
+      "template": "taints"
+    },
+    {
       "controlType": "textarea",
-      "tooltip": "Please provide list of node taints",
-      "displayName": "Taints",
-      "serverValue": "${TAINTS}"
-    }
+      "tooltip": "Please provide list ARN's polices to attach ; seperated",
+      "displayName": "ARN's",
+      "serverValue": "${ADITONAL_ARNS}"
+    },
+      {
+        "controlType": "textarea",
+        "tooltip": "Labels to be added to the node i.e label1=value1;label2=value2",
+        "displayName": "Labels",
+        "serverValue": "${LABELS}"
+      }
   ]
 }

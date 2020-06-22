@@ -1,0 +1,11 @@
+{
+  "controlType": "multi-select",
+  "displayName": "Spot Allocation Strategy",
+  "options": [
+    "capacity-optimized",
+    "lowest-price"
+  ],
+  "value": "lowest-price",
+  "regexValidation": ".*",
+  "serverValue": "${SPOT_ALLOCATION_STRATEGY}"
+}
