@@ -24,14 +24,20 @@
       "template": "autoscaling-desired"
     },
     {
-      "template": "instance-select"
+      "template": "instance-select",
+      "options": [
+        "t3.small",
+        "t2.small",
+        "t3.large",
+        "t2.large"
+      ]
     },
     {
       "template": "spot"
     },
     {
       "controlType": "text",
-      "tooltip": "Connection Port",
+      "tooltip": "Number of instances",
       "displayName": "On-Demand Instances",
       "regexValidation": "^[0-9]*$",
       "serverValue": "${ON_DEMAND_INSTANCES}"
