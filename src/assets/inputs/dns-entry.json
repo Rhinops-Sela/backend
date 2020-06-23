@@ -1,0 +1,7 @@
+{
+  "controlType": "text",
+  "tooltip": "Url to used for access to the component",
+  "displayName": "DNS Record",
+  "regexValidation": "/((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\\+\\$,\\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\\+\\$,\\w]+@)[A-Za-z0-9.-]+)((?:\/[\\+~%\/.\\w-_]*)?\\??(?:[-\\+=&;%@.\\w_]*)#?(?:[\\w]*))?)/",
+  "serverValue": "${DNS_RECORD}"
+}
