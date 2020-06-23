@@ -1,10 +1,10 @@
 {
-  "name": "authentiction",
+  "name": "global",
   "deletable": false,
   "mandatory": true,
-  "displayName": "AWS Credentials",
+  "displayName": "Global Parameters",
   "image": "assets/component_logos/aws.png",
-  "description": "AWS credentials for connecting to the cluster",
+  "description": "Global Parameters For The Deploymnet Process",
   "inputs": [
     {
       "controlType": "text",
@@ -23,11 +23,18 @@
       "global": true
     },
     {
-      "controlType": "text",
+      "template": "region",
+      "serverValue": "${AWS_DEFAULT_REGION}",
       "tooltip": "AWS region for components creation",
       "displayName": "Region",
+      "global": true
+    },
+    {
+      "controlType": "text",
+      "serverValue": "${GLOBAL_NAMESPACE}",
       "regexValidation": ".*",
-      "serverValue": "${AWS_DEFAULT_REGION}",
+      "tooltip": "Namespace will be used for all installation unless local namespace provided",
+      "displayName": "Namespace",
       "global": true
     }
   ]

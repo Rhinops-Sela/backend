@@ -1,10 +1,10 @@
 [
   {
-    "name": "authentiction",
-    "description": "AWS Authentication Credentilas For Resource Creation",
-    "displayName": "Authentication",
+    "name": "global",
+    "displayName": "Global Parametes",
+    "description": "Global Parametes which will be avaliabel as environment variabels during the deployment",
     "pages": [
-      "authentication-page"
+      "global-parameters-page"
     ]
   },
   {
