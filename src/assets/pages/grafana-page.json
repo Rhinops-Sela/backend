@@ -1,19 +1,10 @@
 {
   "name": "grafana",
+  "executer": "pwsh",
   "displayName": "Grafana",
   "image": "assets/component_logos/grafana.png",
   "description": "Grafana configuration & parameters",
   "inputs": [
-    {
-      "controlType": "textarea",
-      "tooltip": "Please provide comma (,) separated list of dashoards to install",
-      "displayName": "Dashboards To Install",
-      "serverValue": "${DASHNOARDS}",
-      "regexValidation": ".*"
-    },
-    {
-      "template": "persistant-data"
-    },
     {
       "template": "dns-entry"
     }

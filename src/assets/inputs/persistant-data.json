@@ -2,5 +2,6 @@
   "controlType": "checkbox",
   "tooltip": "Use Persistent Data?",
   "displayName": "Use Persistent Data?",
-  "serverValue": "${PERSISTANT_DATA}"
+  "serverValue": "${PERSISTANT_DATA}",
+  "value": true
 }
