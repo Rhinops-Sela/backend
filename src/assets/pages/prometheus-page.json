@@ -5,7 +5,22 @@
   "description": "Prometheus configuration & parameters",
   "inputs": [
     {
+      "controlType": "checkbox",
+      "group_enabler_master": "email_notifier",
+      "tooltip": "Use Email Notifier",
+      "displayName": "Enable Email Notifier?",
+      "serverValue": "${EMAIL_NOTIFER}"
+    },
+    {
+      "controlType": "checkbox",
+      "group_enabler_master": "slack_notifier",
+      "tooltip": "Use Slack Notifier",
+      "displayName": "Enable Slack Notifier?",
+      "serverValue": "${SLACK_NOTIFER}"
+    },
+    {
       "controlType": "text",
+      "sub_group": "email_notifier",
       "tooltip": "Sender Address",
       "displayName": "From Email",
       "serverValue": "${FROM}",
@@ -13,6 +28,7 @@
     },
     {
       "controlType": "text",
+      "sub_group": "email_notifier",
       "tooltip": "Email address of the reciever",
       "displayName": "To Email",
       "serverValue": "${TO}",
@@ -20,19 +36,27 @@
     },
     {
       "controlType": "text",
+      "sub_group": "email_notifier",
       "tooltip": "SMTP",
       "displayName": "SMTP",
-      "serverValue": "${TO}",
+      "serverValue": "${SMTP_SERVER}",
       "regexValidation": ".*"
     },
     {
       "template": "username",
-      "tooltip": "SMTP username"
+      "sub_group": "email_notifier"
     },
     {
-      "template": "username",
-      "tooltip": "SMTP password",
-      "displayName": "Password"
+      "template": "password",
+      "sub_group": "email_notifier"
+    },    
+    {
+      "controlType": "text",
+      "sub_group": "slack_notifier",
+      "tooltip": "Slack API Url",
+      "displayName": "Slack API Url",
+      "serverValue": "${SLACK_API}",
+      "regexValidation": ".*"
     }
   ]
 }
