@@ -17,6 +17,17 @@
       "serverValue": "${DEFAULT_RECEIVER}"
     },
     {
+      "template": "dns-entry",
+      "displayName": "Prometheus Server URL To Use",
+      "serverValue" : "${SERVER_DNS_RECORD}"
+
+    },
+    {
+      "template": "dns-entry",
+      "displayName": "Alert Manager URL To Use",
+      "serverValue": "${ALERTMANAGER_RECORD}"
+    },
+    {
       "controlType": "checkbox",
       "group_enabler_master": "email_notifier",
       "tooltip": "Use Email Notifier",
