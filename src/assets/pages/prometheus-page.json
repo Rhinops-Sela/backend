@@ -1,5 +1,6 @@
 {
   "name": "prometheus",
+  "executer": "pwsh",
   "displayName": "Prometheus",
   "image": "assets/component_logos/prometheus.png",
   "description": "Prometheus configuration & parameters",
@@ -17,6 +18,24 @@
       "tooltip": "Use Slack Notifier",
       "displayName": "Enable Slack Notifier?",
       "serverValue": "${SLACK_NOTIFER}"
+    },
+    {
+      "controlType": "checkbox",
+      "group_enabler_master": "webhook_notifier",
+      "tooltip": "Use Webhook Notifier",
+      "displayName": "Enable Webhook Notifier?",
+      "serverValue": "${WEBHOOK_NOTIFER}"
+    },
+    {
+      "controlType": "select",
+      "displayName": "Default Receiver",
+      "options": [
+        "slack",
+        "email",
+        "webhooks"
+      ],
+      "regexValidation": ".*",
+      "serverValue": "${DEFAULT_RECEIVER}"
     },
     {
       "controlType": "text",
@@ -49,13 +68,21 @@
     {
       "template": "password",
       "sub_group": "email_notifier"
-    },    
+    },
     {
       "controlType": "text",
       "sub_group": "slack_notifier",
       "tooltip": "Slack API Url",
       "displayName": "Slack API Url",
-      "serverValue": "${SLACK_API}",
+      "serverValue": "${SLACK_URL}",
+      "regexValidation": ".*"
+    },
+    {
+      "controlType": "text",
+      "sub_group": "webhook_notifier",
+      "tooltip": "Webhook API Url",
+      "displayName": "Webhook API Url",
+      "serverValue": "${WEBHOOK_URL}",
       "regexValidation": ".*"
     }
   ]
