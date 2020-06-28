@@ -6,30 +6,6 @@
   "description": "Prometheus configuration & parameters",
   "inputs": [
     {
-      "controlType": "checkbox",
-      "group_enabler_master": "email_notifier",
-      "tooltip": "Use Email Notifier",
-      "displayName": "Enable Email Notifier?",
-      "serverValue": "${EMAIL_NOTIFER}",
-      "value": true
-    },
-    {
-      "controlType": "checkbox",
-      "group_enabler_master": "slack_notifier",
-      "tooltip": "Use Slack Notifier",
-      "displayName": "Enable Slack Notifier?",
-      "serverValue": "${SLACK_NOTIFER}",
-      "value": false
-    },
-    {
-      "controlType": "checkbox",
-      "group_enabler_master": "webhook_notifier",
-      "tooltip": "Use Webhook Notifier",
-      "displayName": "Enable Webhook Notifier?",
-      "serverValue": "${WEBHOOK_NOTIFER}",
-      "value": false
-    },
-    {
       "controlType": "select",
       "displayName": "Default Receiver",
       "options": [
@@ -39,6 +15,14 @@
       ],
       "regexValidation": ".*",
       "serverValue": "${DEFAULT_RECEIVER}"
+    },
+    {
+      "controlType": "checkbox",
+      "group_enabler_master": "email_notifier",
+      "tooltip": "Use Email Notifier",
+      "displayName": "Enable Email Notifier?",
+      "serverValue": "${EMAIL_NOTIFER}",
+      "value": true
     },
     {
       "controlType": "text",
@@ -73,12 +57,28 @@
       "sub_group": "email_notifier"
     },
     {
+      "controlType": "checkbox",
+      "group_enabler_master": "slack_notifier",
+      "tooltip": "Use Slack Notifier",
+      "displayName": "Enable Slack Notifier?",
+      "serverValue": "${SLACK_NOTIFER}",
+      "value": false
+    },
+    {
       "controlType": "text",
       "sub_group": "slack_notifier",
       "tooltip": "Slack API Url",
       "displayName": "Slack API Url",
       "serverValue": "${SLACK_URL}",
       "regexValidation": ".*"
+    },
+    {
+      "controlType": "checkbox",
+      "group_enabler_master": "webhook_notifier",
+      "tooltip": "Use Webhook Notifier",
+      "displayName": "Enable Webhook Notifier?",
+      "serverValue": "${WEBHOOK_NOTIFER}",
+      "value": false
     },
     {
       "controlType": "text",
