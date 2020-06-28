@@ -10,21 +10,24 @@
       "group_enabler_master": "email_notifier",
       "tooltip": "Use Email Notifier",
       "displayName": "Enable Email Notifier?",
-      "serverValue": "${EMAIL_NOTIFER}"
+      "serverValue": "${EMAIL_NOTIFER}",
+      "value": true
     },
     {
       "controlType": "checkbox",
       "group_enabler_master": "slack_notifier",
       "tooltip": "Use Slack Notifier",
       "displayName": "Enable Slack Notifier?",
-      "serverValue": "${SLACK_NOTIFER}"
+      "serverValue": "${SLACK_NOTIFER}",
+      "value": false
     },
     {
       "controlType": "checkbox",
       "group_enabler_master": "webhook_notifier",
       "tooltip": "Use Webhook Notifier",
       "displayName": "Enable Webhook Notifier?",
-      "serverValue": "${WEBHOOK_NOTIFER}"
+      "serverValue": "${WEBHOOK_NOTIFER}",
+      "value": false
     },
     {
       "controlType": "select",
