@@ -1,5 +1,6 @@
 {
   "name": "core-dns",
+  "executer": "pwsh",
   "domain": "network-domain",
   "displayName": "DNS",
   "image": "assets/component_logos/dns.png",
@@ -7,7 +8,7 @@
   "inputs": [
     {
       "controlType": "textarea",
-      "tooltip": "Please provide comma (,) separated list of A/CNMAE records (foo.io foo.namespace.svc.cluster.local)",
+      "tooltip": "Please provide a ; separated list of A/CNMAE records (foo.io=foo.namespace.svc.cluster.local;bobo.io=google.com)",
       "displayName": "DNS Records",
       "serverValue": "${DNS_RECORDS}",
       "regexValidation": ".*"
