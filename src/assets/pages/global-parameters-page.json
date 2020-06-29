@@ -23,13 +23,6 @@
       "global": true
     },
     {
-      "template": "region",
-      "serverValue": "${AWS_DEFAULT_REGION}",
-      "tooltip": "AWS region for components creation",
-      "displayName": "Region",
-      "global": true
-    },
-    {
       "controlType": "text",
       "serverValue": "${GLOBAL_CLUSTER_NAME}",
       "regexValidation": ".*",
@@ -38,9 +31,8 @@
       "global": true
     },
     {
-      "controlType": "text",
+      "template": "region",
       "serverValue": "${GLOBAL_CLUSTER_REGION}",
-      "regexValidation": ".*",
       "tooltip": "Will be used as the cluster region for enire installation",
       "displayName": "Cluster Region",
       "global": true
