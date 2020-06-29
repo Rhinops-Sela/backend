@@ -20,7 +20,6 @@
       "template": "dns-entry",
       "displayName": "Prometheus Server URL To Use",
       "serverValue" : "${SERVER_DNS_RECORD}"
-
     },
     {
       "template": "dns-entry",
@@ -33,7 +32,7 @@
       "tooltip": "Use Email Notifier",
       "displayName": "Enable Email Notifier?",
       "serverValue": "${EMAIL_NOTIFER}",
-      "value": true
+      "value": false
     },
     {
       "controlType": "text",
@@ -81,7 +80,7 @@
       "tooltip": "Slack API Url",
       "displayName": "Slack API Url",
       "serverValue": "${SLACK_URL}",
-      "regexValidation": ".*"
+      "regexValidation": "https?:\\\/\\\/(www\\.)??[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&=]*)"
     },
     {
       "controlType": "checkbox",
@@ -97,7 +96,7 @@
       "tooltip": "Webhook API Url",
       "displayName": "Webhook API Url",
       "serverValue": "${WEBHOOK_URL}",
-      "regexValidation": ".*"
+      "regexValidation": "https?:\\\/\\\/(www\\.)??[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&=]*)"
     }
   ]
 }

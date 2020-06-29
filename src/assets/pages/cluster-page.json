@@ -9,13 +9,6 @@
   "description": "Please provide cluster information, if cluster doesn't exists it will be created",
   "inputs": [
     {
-      "template": "cluster-name"
-    },
-    {
-      "template": "region",
-      "serverValue": "${CLUSTER_REGION}"
-    },
-    {
       "controlType": "text",
       "tooltip": "Admin ARN",
       "displayName": "Admin ARN",

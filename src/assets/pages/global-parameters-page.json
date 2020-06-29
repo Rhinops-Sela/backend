@@ -31,10 +31,18 @@
     },
     {
       "controlType": "text",
-      "serverValue": "${GLOBAL_NAMESPACE}",
+      "serverValue": "${GLOBAL_CLUSTER_NAME}",
       "regexValidation": ".*",
-      "tooltip": "Namespace will be used for all installation unless local namespace provided",
-      "displayName": "Namespace",
+      "tooltip": "Will be used as the cluster name for enire installation",
+      "displayName": "Cluster Name",
+      "global": true
+    },
+    {
+      "controlType": "text",
+      "serverValue": "${GLOBAL_CLUSTER_REGION}",
+      "regexValidation": ".*",
+      "tooltip": "Will be used as the cluster region for enire installation",
+      "displayName": "Cluster Region",
       "global": true
     }
   ]
