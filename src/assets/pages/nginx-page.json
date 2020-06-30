@@ -1,5 +1,6 @@
 {
   "name": "nginx",
+  "executer": "pwsh",
   "displayName": "NGINX",
   "image": "assets/component_logos/nginx.png",
   "description": "This will allow the creation of ingress controller",
@@ -13,18 +14,6 @@
       ],
       "displayName": "Load Balancer Topology",
       "serverValue": "${ELB_TOPOLOGY}",
-      "regexValidation": ".*"
-    },
-    {
-      "controlType": "select",
-      "tooltip": "The type of load balancer to create",
-      "options": [
-        "ALB",
-        "NLB",
-        "Classic"
-      ],
-      "displayName": "Load Balancer Type",
-      "serverValue": "${ELB_TYPE}",
       "regexValidation": ".*"
     }
   ]

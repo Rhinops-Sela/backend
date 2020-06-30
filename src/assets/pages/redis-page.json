@@ -1,32 +1,46 @@
 {
   "name": "redis",
+  "executer": "pwsh",
   "displayName": "Redis",
   "image": "assets/component_logos/redis.png",
   "description": "Redis configuration & parameters",
   "inputs": [
     {
-      "template": "cluster-name"
+      "template": "instance-select",
+      "tooltip": "Selecte Redis cluster instance type",
+      "options": [
+        "m5.large",
+        "m5.xlrarge",
+        "m5.2xlrarge",
+        "r4.large",
+        "r4.xlrarge",
+        "r4.2xlrarge"
+      ]
+    },
+    {
+      "template": "spot"
     },
     {
       "template": "namespace"
     },
     {
-      "template": "master-nodes"
-    },
-    {
       "template": "slave-nodes"
     },
     {
-      "template": "instance-select",
-      "tooltip": "Selecte Redis cluster instance type",
+      "controlType": "multi-select",
+      "displayName": "Extra ARGS?",
       "options": [
-        "m5.xlrarge",
-        "m5.large",
-        "m5.2xlrarge"
-      ]
+        "--maxmemory-policy allkeys-lru"
+      ],
+      "regexValidation": ".*",
+      "serverValue": "${EXTRA_FLAGS}"
     },
     {
-      "template": "spot"
+      "controlType": "text",
+      "tooltip": "Disabled commands (,) seperated i.e. FLUSHDB,FLUSHALL",
+      "displayName": "Disabled Commands",
+      "serverValue": "${DISABLED_COMMANDS}"
     }
+
   ]
 }
