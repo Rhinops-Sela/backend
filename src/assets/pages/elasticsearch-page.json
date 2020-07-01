@@ -6,9 +6,6 @@
   "description": "ES configuration & parameters",
   "inputs": [
     {
-      "template": "cluster-name"
-    },
-    {
       "template": "namespace"
     },
     {
@@ -27,7 +24,16 @@
       ]
     },
     {
-      "template": "spot"
+      "template": "spot",
+      "group_enabler_master": "use_spot"
+    },
+    {
+      "controlType": "text",
+      "sub_group": "use_spot",
+      "tooltip": "How many on demand instances will be created",
+      "displayName": "# of On Demand Instances to Use",
+      "serverValue": "${ON_DEMAND_INSTANCES}",
+      "regexValidation": ".*"
     }
   ]
 }

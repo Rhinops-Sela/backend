@@ -15,11 +15,34 @@
     {
       "template": "dns-entry",
       "serverValue": "${DYNAMO_DNS_RECORD}"
-
     },
     {
       "template": "dns-entry",
       "serverValue": "${ADMIN_DNS_RECORD}"
+    },
+    {
+      "template": "instance-select",
+      "tooltip": "Selecte Redis cluster instance type",
+      "options": [
+        "m5.large",
+        "m5.xlrarge",
+        "m5.2xlrarge",
+        "r4.large",
+        "r4.xlrarge",
+        "r4.2xlrarge"
+      ]
+    },
+    {
+      "template": "spot",
+      "group_enabler_master": "use_spot"
+    },
+    {
+      "controlType": "text",
+      "sub_group": "use_spot",
+      "tooltip": "How many on demand instances will be created",
+      "displayName": "# of On Demand Instances to Use",
+      "serverValue": "${ON_DEMAND_INSTANCES}",
+      "regexValidation": ".*"
     }
   ]
 }
