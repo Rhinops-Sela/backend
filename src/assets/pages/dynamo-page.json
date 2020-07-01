@@ -1,5 +1,6 @@
 {
   "name": "dynamo",
+  "executer": "pwsh",
   "displayName": "DynamoDB",
   "image": "assets/component_logos/dynamo.png",
   "description": "DynamoDB configuration & parameters",
@@ -12,17 +13,13 @@
       "serverValue": "${NAMESPACE}"
     },
     {
-      "controlType": "text",
-      "tooltip": "Connection Port",
-      "displayName": "Port",
-      "regexValidation": "^[0-9]*$",
-      "serverValue": "${PORT}"
+      "template": "dns-entry",
+      "serverValue": "${DYNAMO_DNS_RECORD}"
+
     },
     {
-      "controlType": "checkbox",
-      "tooltip": "Use Persistent Data?",
-      "displayName": "Use Persistent Data?",
-      "serverValue": "${PERSISTANT_DATA}"
+      "template": "dns-entry",
+      "serverValue": "${ADMIN_DNS_RECORD}"
     }
   ]
 }

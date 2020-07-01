@@ -18,7 +18,16 @@
       ]
     },
     {
-      "template": "spot"
+      "template": "spot",
+      "group_enabler_master": "use_spot"
+    },
+    {
+      "controlType": "text",
+      "sub_group": "use_spot",
+      "tooltip": "How many on demand instances will be created",
+      "displayName": "# of On Demand Instances to Use",
+      "serverValue": "${ON_DEMAND_INSTANCES}",
+      "regexValidation": ".*"
     },
     {
       "template": "namespace"
@@ -32,7 +41,6 @@
       "options": [
         "--maxmemory-policy allkeys-lru"
       ],
-      "regexValidation": ".*",
       "serverValue": "${EXTRA_FLAGS}"
     },
     {
