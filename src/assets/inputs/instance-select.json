@@ -2,9 +2,9 @@
   "controlType": "multi-select",
   "displayName": "Instsance Type",
   "options": [
-    "m5.xlrarge",
+    "m5.xlarge",
     "m5.large",
-    "m5.2xlrarge"
+    "m5.2xlarge"
   ],
   "regexValidation": ".*",
   "serverValue": "${INSTANCE_TYPES}"

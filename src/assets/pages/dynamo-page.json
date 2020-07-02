@@ -14,22 +14,24 @@
     },
     {
       "template": "dns-entry",
-      "serverValue": "${DYNAMO_DNS_RECORD}"
+      "serverValue": "${DYNAMO_DNS_RECORD}",
+      "displayName": "DynamoDb DNS Record"
     },
     {
       "template": "dns-entry",
-      "serverValue": "${ADMIN_DNS_RECORD}"
+      "serverValue": "${ADMIN_DNS_RECORD}",
+      "displayName": "DynamoDb Admin DNS Record"
     },
     {
       "template": "instance-select",
       "tooltip": "Selecte Redis cluster instance type",
       "options": [
         "m5.large",
-        "m5.xlrarge",
-        "m5.2xlrarge",
+        "m5.xlarge",
+        "m5.2xlarge",
         "r4.large",
-        "r4.xlrarge",
-        "r4.2xlrarge"
+        "r4.xlarge",
+        "r4.2xlarge"
       ]
     },
     {

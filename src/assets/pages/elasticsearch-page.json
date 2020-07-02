@@ -18,9 +18,9 @@
       "template": "instance-select",
       "tooltip": "Selecte ES cluster instance type",
       "options": [
-        "m5.xlrarge",
+        "m5.xlarge",
         "m5.large",
-        "m5.2xlrarge"
+        "m5.2xlarge"
       ]
     },
     {

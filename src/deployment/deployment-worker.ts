@@ -37,7 +37,7 @@ export class DeploymentExecuter {
           }
         }
         let createMode = true;
-        if (verb != "delete") {
+        if (verb != "create") {
           createMode = false;
         }
         const deploymentPage = {
