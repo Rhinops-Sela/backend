@@ -42,8 +42,16 @@
     "description": "Selection of databases to available in the cluster",
     "pages": [
       "redis-page",
-      "dynamo-page",
-      "elasticsearch-page"
+      "dynamo-page"
+    ]
+  },
+  {
+    "name": "elk",
+    "displayName": "ELK",
+    "description": "Selection of ELK components to be available in the cluster",
+    "pages": [
+      "elasticsearch-page",
+      "kibana-page"
     ]
   }
 ]

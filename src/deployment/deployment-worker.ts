@@ -36,10 +36,14 @@ export class DeploymentExecuter {
             }
           }
         }
+        let createMode = true;
+        if (verb != "delete") {
+          createMode = false;
+        }
         const deploymentPage = {
           page,
           executionData: {
-            createMode: false,
+            createMode: createMode,
             workingFolder: workingFolders[currentPageCounting],
             parentDomain: domain,
             progress: { currentPage: currentPageCounting + 1, totalDomains: this.domains.length },

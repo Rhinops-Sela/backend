@@ -34,6 +34,27 @@
       "displayName": "# of On Demand Instances to Use",
       "serverValue": "${ON_DEMAND_INSTANCES}",
       "regexValidation": ".*"
+    },
+    {
+      "template": "dns-entry",
+      "tooltip": "Url to used for access to the ES",
+      "displayName": "ES DNS Record",
+      "serverValue": "${ES_DNS_RECORD}"
+    },
+    {
+      "controlType": "checkbox",
+      "group_enabler_master": "kibana_installer",
+      "tooltip": "Install Kibana",
+      "displayName": "Install Kibana?",
+      "serverValue": "${INSTALL_KIBANA}",
+      "value": false
+    },
+    {
+      "template": "dns-entry",
+      "sub_group": "kibana_installer",
+      "tooltip": "Url to used for access to the Kibana",
+      "displayName": "Kibana DNS Record",
+      "serverValue": "${KIBANA_DNS_RECORD}"
     }
   ]
 }

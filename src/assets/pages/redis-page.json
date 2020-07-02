@@ -48,6 +48,9 @@
       "tooltip": "Disabled commands (,) seperated i.e. FLUSHDB,FLUSHALL",
       "displayName": "Disabled Commands",
       "serverValue": "${DISABLED_COMMANDS}"
+    },
+    {
+      "template": "dns-entry"
     }
 
   ]
