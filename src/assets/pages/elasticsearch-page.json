@@ -1,5 +1,6 @@
 {
   "name": "elasticsearch",
+  "executer": "pwsh",
   "mandatory": false,
   "displayName": "ES",
   "image": "assets/component_logos/elasticsearch.png",
