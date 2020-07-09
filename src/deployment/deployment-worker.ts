@@ -130,8 +130,8 @@ export class DeploymentExecuter {
 
   private async copyCommonFolder() {
     await this.copyFolder(
-      [process.env.COMPONENTS_ROOT!, "common"],
-      [process.env.WORKING_ROOT!, `common`]
+      [__dirname, process.env.COMPONENTS_ROOT!, "common"],
+      [__dirname, process.env.WORKING_ROOT!, `common`]
     );
   }
 
@@ -139,8 +139,8 @@ export class DeploymentExecuter {
     try {
       const timeStamp = new Date().getMilliseconds();
       const result = await this.copyFolder(
-        [process.env.COMPONENTS_ROOT!, this.removedCloned(page.name)],
-        [process.env.WORKING_ROOT!, `${page.name}_${timeStamp}`]
+        [__dirname, process.env.COMPONENTS_ROOT!, this.removedCloned(page.name)],
+        [__dirname, process.env.WORKING_ROOT!, `${page.name}_${timeStamp}`]
       );
       return result.target;
     } catch (err) {
