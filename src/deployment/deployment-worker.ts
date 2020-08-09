@@ -110,6 +110,12 @@ export class DeploymentExecuter {
           executer: deploymentPage.page.executer,
           file: `${deploymentPage.executionData.verb}.ps1`,
         };
+      },
+      case "python": {
+        return {
+          executer: deploymentPage.page.executer,
+          file: `${deploymentPage.executionData.verb}.py`,
+        };
       }
       default: {
         return { executer: "bash", file: `${deploymentPage.executionData.verb}.sh` };
