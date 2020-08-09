@@ -12,17 +12,16 @@
       "protocol": "inspector",
       "program": "${workspaceFolder}/src/index.ts",
       "cwd": "${workspaceFolder}",
-      "preLaunchTask": "npm: build-debug-fennec-backend",
+      "preLaunchTask": "npm: build",
       "outFiles": [
         "${workspaceFolder}/dist/*.js"
       ],
       "env": {
-        "COMPONENTS_ROOT": "../../../components",
+        "COMPONENTS_ROOT": "../components",
         "WORKING_ROOT": "../../../working_folder",
         "OUTPUT_FOLDER": "../../output_folder",
-        "MAIN_TEMPLATE_FORM": "../assets/form/development-form.json",
-        "FORM_PAGES_FOLDER": "../assets/pages",
-        "FORM_INPUTS_FOLDER": "../assets/inputs"
+        "MAIN_TEMPLATE_FORM": "fennec/fennec_ui_components/forms/development-form.json",
+        "FORM_TEMPLATES_FOLDER": "fennec/fennec_ui_components/templates"
       }
     }
   ]

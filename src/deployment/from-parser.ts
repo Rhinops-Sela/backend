@@ -6,8 +6,10 @@ import { Logger } from "../logger/logger";
 import { IPage } from "../interfaces/common/IPage";
 export class FormParser {
   public static async getForm(): Promise<IDomain[]> {
-    const fs = require("fs");
-    const filePath = path.join(__dirname, process.env.MAIN_TEMPLATE_FORM!);
+    const filePath = path.join(
+      path.resolve(process.env.COMPONENTS_ROOT!),
+      process.env.MAIN_TEMPLATE_FORM!
+    );
     const fileContent = await readFilePromise(filePath);
     const domains = JSON.parse(fileContent) as IDomain[];
     const templateList = await FormParser.loadTemplatesList();
@@ -16,7 +18,10 @@ export class FormParser {
       for (const page of domain.pages) {
         for (let i = 0; i < page.inputs.length; i++) {
           if (page.inputs[i].template) {
-            const newInput = await FormParser.replaceTemlate(templateList, page.inputs[i]);
+            const newInput = await FormParser.replaceTemlate(
+              templateList,
+              page.inputs[i]
+            );
             if (newInput) {
               page.inputs[i] = newInput;
             }
@@ -27,16 +32,23 @@ export class FormParser {
     return domains;
   }
 
-  private static async replaceTemlate(templateList: IInputTemplate[], input: any): Promise<any> {
+  private static async replaceTemlate(
+    templateList: IInputTemplate[],
+    input: any
+  ): Promise<any> {
     try {
       if (!input.template) {
         return;
       }
-      const loadedTemplatePath = templateList.find((template) => template.templateName === input.template);
+      const loadedTemplatePath = templateList.find(
+        (template) => template.templateName === input.template
+      );
       if (!loadedTemplatePath) {
         return;
       }
-      const loadedTemplatJson = await readFilePromise(loadedTemplatePath?.templatePath);
+      const loadedTemplatJson = await readFilePromise(
+        loadedTemplatePath?.templatePath
+      );
       const loadedTemplateObj = JSON.parse(loadedTemplatJson);
       Object.setPrototypeOf(loadedTemplateObj, input);
       const loadedTemplateObjKeys = Object.keys(loadedTemplateObj);
@@ -53,17 +65,32 @@ export class FormParser {
     }
   }
 
+  private static async getPageContent(fileNmae: string, searchFolder: string) {
+    const globby = require("globby");
+    const paths = await globby(searchFolder, {
+      expandDirectories: {
+        files: [fileNmae],
+        extensions: ["json"],
+      },
+    });
+    return await readFilePromise(path.resolve(paths[0]));
+  }
+
   private static async loadPages(domain: IDomain) {
     const readdir = require("recursive-readdir");
-    const pagesToLoadPath = path.join(__dirname, process.env.FORM_PAGES_FOLDER!);
     const loadedPages: IPage[] = [];
     for (const pageName of domain.pages) {
       try {
-        const content = await readFilePromise(path.join(__dirname, process.env.FORM_PAGES_FOLDER!, `${pageName}.json`));
+        //COWABUNGA
+        const content = await this.getPageContent(
+          `${pageName}.json`,
+          process.env.COMPONENTS_ROOT!
+        );
         const page = JSON.parse(content);
         loadedPages.push(page);
       } catch (error) {
         Logger.error(error.message, error.stack);
+        throw error;
       }
     }
     domain.pages = loadedPages;
@@ -72,7 +99,10 @@ export class FormParser {
   private static async loadTemplatesList(): Promise<IInputTemplate[]> {
     const readdir = require("recursive-readdir");
     const templates: IInputTemplate[] = [];
-    const templatesRoot = path.join(__dirname, process.env.FORM_INPUTS_FOLDER!);
+    const templatesRoot = path.join(
+      path.resolve(process.env.COMPONENTS_ROOT!),
+      process.env.FORM_TEMPLATES_FOLDER!
+    );
     const templateFiles = await readdir(templatesRoot);
     for (const templatePath of templateFiles) {
       const templateName = templatePath.replace(/^.*[\\\/]/, "").split(".")[0];

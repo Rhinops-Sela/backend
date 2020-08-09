@@ -7,9 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start:dev": "nodemon",
     "start": "npm run build && node dist/index.js",
-    "build": "rimraf ./dist && tsc && npm run copy-assets",
-    "build-debug-fennec-backend": "tsc && npm run copy-assets",
-    "copy-assets": "cp -rv src/assets/ dist/assets/"
+    "build": "rimraf ./dist && tsc",
+    "build-debug": "tsc"
   },
   "keywords": [],
   "author": "",
@@ -25,7 +24,7 @@
     "nodemon": "^2.0.4",
     "rimraf": "^3.0.2",
     "ts-node": "^8.10.2",
-    "typescript": "^3.9.5"
+    "typescript": "^3.9.7"
   },
   "dependencies": {
     "@types/fs-readfile-promise": "^3.0.0",
@@ -34,6 +33,7 @@
     "express-validator": "^6.5.0",
     "fs-extra": "^9.0.1",
     "fs-readfile-promise": "^3.0.1",
+    "globby": "^11.0.1",
     "path": "^0.12.7",
     "recursive-readdir": "^2.2.2",
     "shelljs": "^0.8.4",
