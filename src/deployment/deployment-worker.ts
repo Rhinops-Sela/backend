@@ -12,8 +12,10 @@ import { DeploymentExecutionMaster } from "./deployment-execution-master";
 import { LogLine } from "./logline-message";
 export class DeploymentExecuter {
   private globalVariables: IGlobalVariable[] = [];
-
-  constructor(public domains: IDomain[], public deploymentIdentifier: string) {}
+  timeStamp = 0
+  constructor(public domains: IDomain[], public deploymentIdentifier: string) {
+    this.timeStamp = new Date().getMilliseconds();
+  }
   public async startDeletion(workingFolders: string[]) {
     const deployPages = this.flattenDomains(
       "Deleting",
@@ -93,6 +95,7 @@ export class DeploymentExecuter {
         pageIndex < this.domains[domainIndex].pages.length;
         pageIndex++
       ) {
+        
         const page = this.domains[domainIndex].pages[pageIndex];
         workingFolders.push(await this.backupWorkingFolder(page));
       }
@@ -141,8 +144,8 @@ export class DeploymentExecuter {
       }
       case "python": {
         return {
-          executer: '/usr/local/bin/python',
-          addional_args: '-u',
+          executer: "/usr/local/bin/python",
+          addional_args: "-u",
           file: `${deploymentPage.executionData.verb}.py`,
         };
       }
@@ -176,15 +179,16 @@ export class DeploymentExecuter {
     );
   }
 
-  private async backupWorkingFolder(page: IPage): Promise<string> {
+  private async backupWorkingFolder(
+    page: IPage
+  ): Promise<string> {
     try {
-      const timeStamp = new Date().getMilliseconds();
       const result = await this.copyFolder(
         [
           path.resolve(process.env.COMPONENTS_ROOT!),
           this.removedCloned(page.name),
         ],
-        [path.resolve(process.env.WORKING_ROOT!), `${page.name}_${timeStamp}`]
+        [`${path.resolve(process.env.WORKING_ROOT!)}_${this.timeStamp}`, `${page.name}`]
       );
       return result.target;
     } catch (err) {
