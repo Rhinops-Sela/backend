@@ -1,5 +1,5 @@
-import { ChildProcessWithoutNullStreams } from "child_process";
-import { CompletedMessage } from "./../messages/completed-message";
+import path from "path";
+import { CompletedMessage } from "../messages/completed-message";
 import { ErrordMessage } from "../messages/error-message";
 import { IGlobalVariable } from "../interfaces/server/IGlobalVariable";
 import { IDeploymentPage } from "../interfaces/server/IDeploymentPage";
@@ -9,22 +9,33 @@ import { Logger } from "../logger/logger";
 import app from "../app";
 import { IExecuter } from "../interfaces/server/IExecuter";
 import { DeploymentExecutionMaster } from "./deployment-execution-master";
-import { IDeploymentProcess } from "../interfaces/server/IDeploymentProcess";
 import { LogLine } from "./logline-message";
 export class DeploymentExecuter {
   private globalVariables: IGlobalVariable[] = [];
 
   constructor(public domains: IDomain[], public deploymentIdentifier: string) {}
   public async startDeletion(workingFolders: string[]) {
-    const deployPages = this.flattenDomains("Deleting", "delete", workingFolders);
+    const deployPages = this.flattenDomains(
+      "Deleting",
+      "delete",
+      workingFolders
+    );
     return await this.startExecution(deployPages);
   }
   public async startDeployment(workingFolders: string[]) {
-    const deployPages = this.flattenDomains("Starting Deployment", "create", workingFolders);
+    const deployPages = this.flattenDomains(
+      "Starting Deployment",
+      "create",
+      workingFolders
+    );
     return await this.startExecution(deployPages);
   }
 
-  private flattenDomains(deployMessage: string, verb: string, workingFolders: string[]): IDeploymentPage[] {
+  private flattenDomains(
+    deployMessage: string,
+    verb: string,
+    workingFolders: string[]
+  ): IDeploymentPage[] {
     const deployPages: IDeploymentPage[] = [];
     let currentPageCounting = 0;
     for (let domain of this.domains) {
@@ -46,7 +57,10 @@ export class DeploymentExecuter {
             createMode: createMode,
             workingFolder: workingFolders[currentPageCounting],
             parentDomain: domain,
-            progress: { currentPage: currentPageCounting + 1, totalDomains: this.domains.length },
+            progress: {
+              currentPage: currentPageCounting + 1,
+              totalDomains: this.domains.length,
+            },
             verb: verb,
             logs: [new LogLine(deployMessage)],
             deploymentIdentifier: this.deploymentIdentifier,
@@ -56,7 +70,10 @@ export class DeploymentExecuter {
         currentPageCounting++;
         for (let input of page.inputs) {
           if (input.global) {
-            this.globalVariables.push({ variableName: input.serverValue, variableValue: input.value });
+            this.globalVariables.push({
+              variableName: input.serverValue,
+              variableValue: input.value,
+            });
           }
         }
       }
@@ -66,8 +83,16 @@ export class DeploymentExecuter {
 
   public async createWorkingFolders() {
     const workingFolders: string[] = [];
-    for (let domainIndex = 0; domainIndex < this.domains.length; domainIndex++) {
-      for (let pageIndex = 0; pageIndex < this.domains[domainIndex].pages.length; pageIndex++) {
+    for (
+      let domainIndex = 0;
+      domainIndex < this.domains.length;
+      domainIndex++
+    ) {
+      for (
+        let pageIndex = 0;
+        pageIndex < this.domains[domainIndex].pages.length;
+        pageIndex++
+      ) {
         const page = this.domains[domainIndex].pages[pageIndex];
         workingFolders.push(await this.backupWorkingFolder(page));
       }
@@ -86,7 +111,10 @@ export class DeploymentExecuter {
       } catch (error) {
         Logger.error(error.message, error.stack);
         const deploymentMessage = new ErrordMessage(deployPage, error);
-        app.socketServer.sendMessage(this.deploymentIdentifier, deploymentMessage);
+        app.socketServer.sendMessage(
+          this.deploymentIdentifier,
+          deploymentMessage
+        );
         return;
       }
     }
@@ -110,20 +138,27 @@ export class DeploymentExecuter {
           executer: deploymentPage.page.executer,
           file: `${deploymentPage.executionData.verb}.ps1`,
         };
-      },
+      }
       case "python": {
         return {
-          executer: deploymentPage.page.executer,
+          executer: '/usr/local/bin/python',
+          addional_args: '-u',
           file: `${deploymentPage.executionData.verb}.py`,
         };
       }
       default: {
-        return { executer: "bash", file: `${deploymentPage.executionData.verb}.sh` };
+        return {
+          executer: "bash",
+          file: `${deploymentPage.executionData.verb}.sh`,
+        };
       }
     }
   }
 
-  private async copyFolder(source: string[], target: string[]): Promise<{ source: string; target: string }> {
+  private async copyFolder(
+    source: string[],
+    target: string[]
+  ): Promise<{ source: string; target: string }> {
     const fs = require("fs-extra");
     const path = require("path");
     const shell = require("shelljs");
@@ -136,8 +171,8 @@ export class DeploymentExecuter {
 
   private async copyCommonFolder() {
     await this.copyFolder(
-      [__dirname, process.env.COMPONENTS_ROOT!, "common"],
-      [__dirname, process.env.WORKING_ROOT!, `common`]
+      [path.resolve(process.env.COMPONENTS_ROOT!), "fennec"],
+      [path.resolve(process.env.WORKING_ROOT!), `fennec`]
     );
   }
 
@@ -145,8 +180,11 @@ export class DeploymentExecuter {
     try {
       const timeStamp = new Date().getMilliseconds();
       const result = await this.copyFolder(
-        [__dirname, process.env.COMPONENTS_ROOT!, this.removedCloned(page.name)],
-        [__dirname, process.env.WORKING_ROOT!, `${page.name}_${timeStamp}`]
+        [
+          path.resolve(process.env.COMPONENTS_ROOT!),
+          this.removedCloned(page.name),
+        ],
+        [path.resolve(process.env.WORKING_ROOT!), `${page.name}_${timeStamp}`]
       );
       return result.target;
     } catch (err) {
@@ -165,10 +203,14 @@ export class DeploymentExecuter {
 
   private async executeScript(pageToExecute: IDeploymentPage) {
     try {
-      const workingFolder = pageToExecute.executionData.workingFolder;
       const executer = this.getDeployemntExecuter(pageToExecute);
-      const deploymentExecutionMaster = new DeploymentExecutionMaster(this.globalVariables);
-      const deploymentProcess = await deploymentExecutionMaster.startListening(pageToExecute, executer);
+      const deploymentExecutionMaster = new DeploymentExecutionMaster(
+        this.globalVariables
+      );
+      const deploymentProcess = await deploymentExecutionMaster.startListening(
+        pageToExecute,
+        executer
+      );
       await new Promise((resolve, reject) => {
         deploymentProcess.on("close", resolve);
       }).catch((error) => {

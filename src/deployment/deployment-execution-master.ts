@@ -11,6 +11,7 @@ import { IDeploymentProcess } from "../interfaces/server/IDeploymentProcess";
 import { ILogLine } from "../interfaces/common/ILogLine";
 import { LogLine } from "./logline-message";
 import { ErrorLogLine } from "./logline-error";
+import path from "path";
 export class DeploymentExecutionMaster {
   public static deploymentProcesses: IDeploymentProcess[] = [];
   private logLines: ILogLine[] = [];
@@ -24,13 +25,18 @@ export class DeploymentExecutionMaster {
     pageToExecute: IDeploymentPage,
     executer: IExecuter
   ): Promise<ChildProcessWithoutNullStreams> {
-    await this.replaceUserParameters(pageToExecute);
-    await this.replaceUGlobalParameters(pageToExecute.executionData.workingFolder);
+    let env = Object.create(process.env);
+    env = this.addGlobalVariabels(env);
+    env = this.addPageVariables(pageToExecute, env);
+    // await this.replaceUGlobalParameters(pageToExecute.executionData.workingFolder);
+
+    const args = executer.addional_args || "";
+
     const deploymentProcess = spawn(
       executer.executer,
-      [`${pageToExecute.executionData.workingFolder}/${executer.file}`],
+      [args, `${pageToExecute.executionData.workingFolder}/${executer.file}`],
       {
-        env: this.addGlobalVariabels(),
+        env: env,
         cwd: pageToExecute.executionData.workingFolder,
       }
     );
@@ -55,22 +61,30 @@ export class DeploymentExecutionMaster {
       if (log.trim()) {
         pageToExecute.executionData.logs.push(new ErrorLogLine(log));
       }
-      app.socketServer.sendMessage(pageToExecute.executionData.deploymentIdentifier, new ErrordMessage(pageToExecute));
+      app.socketServer.sendMessage(
+        pageToExecute.executionData.deploymentIdentifier,
+        new ErrordMessage(pageToExecute)
+      );
       if (pageToExecute.page.stderrFail) {
         that.exitCode = -1;
-        DeploymentExecutionMaster.killProcess(pageToExecute.executionData.deploymentIdentifier);
+        DeploymentExecutionMaster.killProcess(
+          pageToExecute.executionData.deploymentIdentifier
+        );
       }
     });
 
     return deploymentProcess;
   }
 
-  private addGlobalVariabels(): NodeJS.ProcessEnv {
-    const env = Object.create(process.env);
+  private addGlobalVariabels(env: any): NodeJS.ProcessEnv {
     for (let globalVariable of this.globalVariables) {
-      const cleanName = globalVariable.variableName.substring(2, globalVariable.variableName.length - 1);
-      env[cleanName] = globalVariable.variableValue;
+      const cleanName = globalVariable.variableName.substring(
+        2,
+        globalVariable.variableName.length - 1
+      );
+      env[globalVariable.variableName] = globalVariable.variableValue;
     }
+    env["API_USER"] = true;
     return env;
   }
 
@@ -88,26 +102,19 @@ export class DeploymentExecutionMaster {
     DeploymentExecutionMaster.deploymentProcesses = newDeploymentProcesses;
   }
 
-  private async replaceUserParameters(pageToExecute: IDeploymentPage) {
-    const fs = require("fs");
-    const util = require("util");
-    const readFile = util.promisify(fs.readFile);
-    const fs_writeFile = util.promisify(fs.writeFile);
-    const files = await this.getFiles(pageToExecute.executionData.workingFolder);
-    for (const file of files) {
-      let content = await readFile(file.path, "utf8");
-      for (const input of pageToExecute.page.inputs) {
-        while (content.indexOf(`${input.serverValue}`) > 0) {
-          try {
-            content = content.replace(`${input.serverValue}`, `${input.value}`);
-          } catch (error) {
-            Logger.error(error.message, error.stack);
-          }
+  private addPageVariables(pageToExecute: IDeploymentPage, env: any) {
+    for (const input of pageToExecute.page.inputs) {
+      console.log(input);
+      env[input.serverValue] = input.value;
+      /* while (content.indexOf(`${input.serverValue}`) > 0) {
+        try {
+          //let content = content.replace(`${input.serverValue}`, `${input.value}`);
+        } catch (error) {
+          Logger.error(error.message, error.stack);
         }
-        await fs_writeFile(file.path, content, "utf-8");
-      }
+      } */
     }
-    return files;
+    return env;
   }
 
   private async replaceUGlobalParameters(workingFolder: string) {
@@ -120,7 +127,10 @@ export class DeploymentExecutionMaster {
       let content = await readFile(file.path, "utf8");
       for (const globalVariable of this.globalVariables) {
         try {
-          content = content.replace(`${globalVariable.variableName}`, `${globalVariable.variableValue}`);
+          content = content.replace(
+            `${globalVariable.variableName}`,
+            `${globalVariable.variableValue}`
+          );
         } catch (error) {
           Logger.error(error.message, error.stack);
         }
@@ -136,8 +146,13 @@ export class DeploymentExecutionMaster {
       const entries = await fs.readdir(path, { withFileTypes: true });
       const files = entries
         .filter((file: { isDirectory: () => any }) => !file.isDirectory())
-        .map((file: { name: string }) => ({ ...file, path: path + "/" + file.name }));
-      const folders = entries.filter((folder: { isDirectory: () => any }) => folder.isDirectory());
+        .map((file: { name: string }) => ({
+          ...file,
+          path: path + "/" + file.name,
+        }));
+      const folders = entries.filter((folder: { isDirectory: () => any }) =>
+        folder.isDirectory()
+      );
       for (const folder of folders) {
         const newPath = pathJoin.join(path, folder.name);
         files.push(...(await this.getFiles(newPath)));

@@ -84,7 +84,7 @@ export class FormParser {
         //COWABUNGA
         const content = await this.getPageContent(
           `${pageName}.json`,
-          process.env.COMPONENTS_ROOT!
+          path.resolve(process.env.COMPONENTS_ROOT!)
         );
         const page = JSON.parse(content);
         loadedPages.push(page);

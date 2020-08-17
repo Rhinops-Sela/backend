@@ -18,8 +18,7 @@
       ],
       "env": {
         "COMPONENTS_ROOT": "../components",
-        "WORKING_ROOT": "../../../working_folder",
-        "OUTPUT_FOLDER": "../../output_folder",
+        "WORKING_ROOT": "../working_folder",
         "MAIN_TEMPLATE_FORM": "fennec/fennec_ui_components/forms/development-form.json",
         "FORM_TEMPLATES_FOLDER": "fennec/fennec_ui_components/templates"
       }
