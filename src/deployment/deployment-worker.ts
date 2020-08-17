@@ -12,7 +12,7 @@ import { DeploymentExecutionMaster } from "./deployment-execution-master";
 import { LogLine } from "./logline-message";
 export class DeploymentExecuter {
   private globalVariables: IGlobalVariable[] = [];
-  timeStamp = 0
+  timeStamp = 0;
   constructor(public domains: IDomain[], public deploymentIdentifier: string) {
     this.timeStamp = new Date().getMilliseconds();
   }
@@ -95,7 +95,6 @@ export class DeploymentExecuter {
         pageIndex < this.domains[domainIndex].pages.length;
         pageIndex++
       ) {
-        
         const page = this.domains[domainIndex].pages[pageIndex];
         workingFolders.push(await this.backupWorkingFolder(page));
       }
@@ -107,17 +106,30 @@ export class DeploymentExecuter {
 
   private async startExecution(deployPages: IDeploymentPage[]) {
     for (let deployPage of deployPages) {
-      try {
-        deployPage.executionData.progress.totalPages = deployPages.length;
-        const exitCode = await this.executeScript(deployPage);
-        this.sendFinalMessage(exitCode, deployPage);
-      } catch (error) {
-        Logger.error(error.message, error.stack);
-        const deploymentMessage = new ErrordMessage(deployPage, error);
-        app.socketServer.sendMessage(
-          this.deploymentIdentifier,
-          deploymentMessage
-        );
+      if (
+        DeploymentExecutionMaster.killedDeployments.indexOf(
+          this.deploymentIdentifier
+        ) == -1
+      ) {
+        try {
+          deployPage.executionData.progress.totalPages = deployPages.length;
+          const exitCode = await this.executeScript(deployPage);
+          this.sendFinalMessage(exitCode, deployPage);
+        } catch (error) {
+          Logger.error(error.message, error.stack);
+          const deploymentMessage = new ErrordMessage(deployPage, error);
+          app.socketServer.sendMessage(
+            this.deploymentIdentifier,
+            deploymentMessage
+          );
+          return;
+        }
+      } else {
+        Logger.info(`Killed all (${this.deploymentIdentifier})`);
+        const index = DeploymentExecutionMaster.killedDeployments.indexOf(this.deploymentIdentifier, 0);
+        if (index > -1) {
+          DeploymentExecutionMaster.killedDeployments.splice(index, 1);
+        }
         return;
       }
     }
@@ -179,16 +191,17 @@ export class DeploymentExecuter {
     );
   }
 
-  private async backupWorkingFolder(
-    page: IPage
-  ): Promise<string> {
+  private async backupWorkingFolder(page: IPage): Promise<string> {
     try {
       const result = await this.copyFolder(
         [
           path.resolve(process.env.COMPONENTS_ROOT!),
           this.removedCloned(page.name),
         ],
-        [`${path.resolve(process.env.WORKING_ROOT!)}_${this.timeStamp}`, `${page.name}`]
+        [
+          `${path.resolve(process.env.WORKING_ROOT!)}_${this.timeStamp}`,
+          `${page.name}`,
+        ]
       );
       return result.target;
     } catch (err) {
@@ -220,15 +233,9 @@ export class DeploymentExecuter {
       }).catch((error) => {
         Logger.error(error.message, error.stack);
       });
-      //await this.deleteFolder(workingFolder);
       return deploymentExecutionMaster.exitCode;
     } catch (error) {
       Logger.error(error.message, error.stack);
     }
-  }
-
-  private async deleteFolder(workingFolder: string) {
-    const fs = require("fs-extra");
-    await fs.remove(workingFolder);
   }
 }

@@ -2,19 +2,16 @@ import { IDeploymentPage } from "../interfaces/server/IDeploymentPage";
 import { IExecuter } from "../interfaces/server/IExecuter";
 import { spawn, ChildProcessWithoutNullStreams } from "child_process";
 import app from "../app";
-import pathJoin from "path";
 import { IGlobalVariable } from "../interfaces/server/IGlobalVariable";
 import { ErrordMessage } from "../messages/error-message";
 import { Logger } from "../logger/logger";
 import { DeploymentMessage } from "../messages/deployment-message";
 import { IDeploymentProcess } from "../interfaces/server/IDeploymentProcess";
-import { ILogLine } from "../interfaces/common/ILogLine";
 import { LogLine } from "./logline-message";
 import { ErrorLogLine } from "./logline-error";
-import path from "path";
 export class DeploymentExecutionMaster {
   public static deploymentProcesses: IDeploymentProcess[] = [];
-  private logLines: ILogLine[] = [];
+  public static killedDeployments: string[] = []
   public exitCode = 0;
   private globalVariables: IGlobalVariable[] = [];
   constructor(globalVariables: IGlobalVariable[]) {
@@ -89,11 +86,11 @@ export class DeploymentExecutionMaster {
   }
 
   public static killProcess(deploymentProcessIdentifier: string) {
-    Logger.info("kill requested");
     const newDeploymentProcesses: IDeploymentProcess[] = [];
     var kill = require("tree-kill");
     for (let deploymentProcess of DeploymentExecutionMaster.deploymentProcesses) {
       if (deploymentProcess.identifier === deploymentProcessIdentifier) {
+        DeploymentExecutionMaster.killedDeployments.push(deploymentProcessIdentifier)
         kill(deploymentProcess.process.pid);
       } else {
         newDeploymentProcesses.push(deploymentProcess);
@@ -104,62 +101,9 @@ export class DeploymentExecutionMaster {
 
   private addPageVariables(pageToExecute: IDeploymentPage, env: any) {
     for (const input of pageToExecute.page.inputs) {
-      console.log(input);
+      Logger.info(input);
       env[input.serverValue] = input.value;
-      /* while (content.indexOf(`${input.serverValue}`) > 0) {
-        try {
-          //let content = content.replace(`${input.serverValue}`, `${input.value}`);
-        } catch (error) {
-          Logger.error(error.message, error.stack);
-        }
-      } */
     }
     return env;
-  }
-
-  private async replaceUGlobalParameters(workingFolder: string) {
-    const fs = require("fs");
-    const util = require("util");
-    const readFile = util.promisify(fs.readFile);
-    const fs_writeFile = util.promisify(fs.writeFile);
-    const files = await this.getFiles(workingFolder);
-    for (const file of files) {
-      let content = await readFile(file.path, "utf8");
-      for (const globalVariable of this.globalVariables) {
-        try {
-          content = content.replace(
-            `${globalVariable.variableName}`,
-            `${globalVariable.variableValue}`
-          );
-        } catch (error) {
-          Logger.error(error.message, error.stack);
-        }
-        await fs_writeFile(file.path, content, "utf-8");
-      }
-    }
-    return files;
-  }
-
-  private async getFiles(path = "./"): Promise<any> {
-    try {
-      const { promises: fs } = require("fs");
-      const entries = await fs.readdir(path, { withFileTypes: true });
-      const files = entries
-        .filter((file: { isDirectory: () => any }) => !file.isDirectory())
-        .map((file: { name: string }) => ({
-          ...file,
-          path: path + "/" + file.name,
-        }));
-      const folders = entries.filter((folder: { isDirectory: () => any }) =>
-        folder.isDirectory()
-      );
-      for (const folder of folders) {
-        const newPath = pathJoin.join(path, folder.name);
-        files.push(...(await this.getFiles(newPath)));
-      }
-      return files;
-    } catch (error) {
-      Logger.error(error.message, error.stack);
-    }
   }
 }

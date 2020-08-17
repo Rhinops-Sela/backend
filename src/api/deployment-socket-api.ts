@@ -27,7 +27,7 @@ export class DeploymentServer {
       this.socket = socket;
       socket.on(DeploymentEvent.KILL, (deploymentIdetifier:string) => {
         DeploymentExecutionMaster.killProcess(deploymentIdetifier);
-        Logger.info("Kill Process Requested");
+        Logger.info(`Kill Process Requested: ${deploymentIdetifier}`);
       });
       socket.on(DeploymentEvent.DISCONNECT, () => {
         Logger.info("Client disconnected");
