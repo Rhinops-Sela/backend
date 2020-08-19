@@ -156,7 +156,7 @@ export class DeploymentExecuter {
       }
       case "python": {
         return {
-          executer: "python",
+          executer: "python3",
           addional_args: "-u",
           file: `${deploymentPage.executionData.verb}.py`,
         };
