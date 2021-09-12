@@ -67,7 +67,9 @@ export class FormParser {
 
   private static async getPageContent(fileNmae: string, searchFolder: string) {
     const globby = require("globby");
-    const paths = await globby(searchFolder, {
+    const unixify = require('unixify');
+    let _path = unixify(searchFolder);
+    const paths = await globby(_path, {
       expandDirectories: {
         files: [fileNmae],
         extensions: ["json"],
