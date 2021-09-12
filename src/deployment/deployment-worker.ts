@@ -178,10 +178,10 @@ export class DeploymentExecuter {
     const path = require("path");
     const shell = require("shelljs");
     const targetFolder = path.join.apply(null, target);
-    const sourceFoldet = path.join.apply(null, source);
+    const sourceFolder = path.join.apply(null, source);
     shell.mkdir("-p", targetFolder);
-    await fs.copy(sourceFoldet, targetFolder);
-    return { source: sourceFoldet, target: targetFolder };
+    await fs.copy(sourceFolder, targetFolder);
+    return { source: sourceFolder, target: targetFolder };
   }
 
   private async copyCommonFolder() {

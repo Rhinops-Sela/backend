@@ -12,9 +12,9 @@
       "protocol": "inspector",
       "program": "${workspaceFolder}/src/index.ts",
       "cwd": "${workspaceFolder}",
-      "preLaunchTask": "npm: build",
+      "preLaunchTask": "tsc: build - tsconfig.json",
       "outFiles": [
-        "${workspaceFolder}/dist/*.js"
+        "${workspaceFolder}/dist/**/*.js"
       ],
       "env": {
         "COMPONENTS_ROOT": "../components",
