@@ -11,11 +11,25 @@ export let validateJson = async (req: Request, res: Response, next: any) => {
   }
 };
 
+export let downloadOutputs = async (req: Request, res: Response, next: any) => {
+  try {
+    let folderToDownload = req.query.identifier;
+    const folder = path.resolve(__dirname, `../../../../`,`outputs-${folderToDownload}`);
+    let fileName = await DeploymentExecuter.compressFolder(folder)
+    res.download(path.resolve(fileName));
+  } catch (error) {
+    Logger.error(error.message, error.stack);
+    return res.status(500).json({ error: error.message });
+  }
+};
 export let startDeployment = async (req: Request, res: Response, next: any) => {
   try {
     const deleteMode = req.body.deleteMode || false;
     const deploymentIdentifier = `deploymentUpdate-${new Date().toISOString()}`;
-    const deploymentExecuter = new DeploymentExecuter(req.body.form, deploymentIdentifier);
+    const deploymentExecuter = new DeploymentExecuter(
+      req.body.form,
+      deploymentIdentifier
+    );
     const workingFolders = await deploymentExecuter.createWorkingFolders();
     if (req.query.wait) {
       if (deleteMode) {
@@ -30,6 +44,7 @@ export let startDeployment = async (req: Request, res: Response, next: any) => {
         deploymentExecuter.startDeployment(workingFolders);
       }
     }
+
     return res.status(200).json(deploymentIdentifier);
   } catch (error) {
     Logger.error(error.message, error.stack);
