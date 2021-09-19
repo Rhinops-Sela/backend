@@ -12,9 +12,11 @@ import { DeploymentExecutionMaster } from "./deployment-execution-master";
 import { LogLine } from "./logline-message";
 export class DeploymentExecuter {
   private globalVariables: IGlobalVariable[] = [];
+  private output_folder: string;
   timeStamp = 0;
   constructor(public domains: IDomain[], public deploymentIdentifier: string) {
     this.timeStamp = new Date().getMilliseconds();
+    this.output_folder = `outputs-${deploymentIdentifier}`;
   }
   public async startDeletion(workingFolders: string[]) {
     const deployPages = this.flattenDomains(
@@ -24,6 +26,27 @@ export class DeploymentExecuter {
     );
     return await this.startExecution(deployPages);
   }
+
+  public static async compressFolder(sourceFolder: string): Promise<any>{
+    Logger.info(`Compressing: ${sourceFolder}`)
+    let output = `${sourceFolder}.zip`
+    Logger.info(`Destination: ${output}`)
+    const archiver = require('archiver');
+    const fs = require('fs');
+    const archive = archiver('zip', { zlib: { level: 9 }});
+    const stream = fs.createWriteStream(output);
+    return new Promise((resolve, reject) => {
+      archive
+        .directory(sourceFolder, false)
+        .on('error', (err: any) => reject(err))
+        .pipe(stream)
+      ;
+  
+      stream.on('close', () => resolve(output));
+      archive.finalize();
+    });
+  }
+
   public async startDeployment(workingFolders: string[]) {
     const deployPages = this.flattenDomains(
       "Starting Deployment",
@@ -70,6 +93,10 @@ export class DeploymentExecuter {
         };
         deployPages.push(deploymentPage);
         currentPageCounting++;
+        this.globalVariables.push({
+          variableName: "FENNEC_OUTPUTS_FOLDER",
+          variableValue: this.output_folder,
+        });
         for (let input of page.inputs) {
           if (input.global) {
             this.globalVariables.push({
@@ -126,7 +153,10 @@ export class DeploymentExecuter {
         }
       } else {
         Logger.info(`Killed all (${this.deploymentIdentifier})`);
-        const index = DeploymentExecutionMaster.killedDeployments.indexOf(this.deploymentIdentifier, 0);
+        const index = DeploymentExecutionMaster.killedDeployments.indexOf(
+          this.deploymentIdentifier,
+          0
+        );
         if (index > -1) {
           DeploymentExecutionMaster.killedDeployments.splice(index, 1);
         }
