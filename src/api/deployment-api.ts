@@ -22,6 +22,30 @@ export let downloadOutputs = async (req: Request, res: Response, next: any) => {
     return res.status(500).json({ error: error.message });
   }
 };
+
+export let cleanOutputs = async (req: Request, res: Response, next: any) => {
+  try {
+    let folderToDownload = req.body.identifier;
+    const folder = path.resolve(__dirname, `../../../../`,`outputs-${folderToDownload}`);
+    let fileName = await DeploymentExecuter.compressFolder(folder)
+    let workingFolderSuffix = folderToDownload.split('.').pop() || "";
+    if(workingFolderSuffix[0] == '0') {
+      workingFolderSuffix = workingFolderSuffix.substring(1)
+    }
+    let workingFolder = path.resolve(__dirname, `../../../../`,`working_folder_${workingFolderSuffix.substring(0, workingFolderSuffix.length - 1)}`);
+    var rimraf = require("rimraf");
+    Logger.info(`Deleting folder: ${folder}`)
+    rimraf.sync(folder);
+    Logger.info(`Deleting folder: ${fileName}`)
+    rimraf.sync(fileName);
+    Logger.info(`Deleting folder: ${workingFolder}`)
+    rimraf.sync(workingFolder);
+  } catch (error) {
+    Logger.error(error.message, error.stack);
+    return res.status(500).json({ error: error.message });
+  }
+};
+
 export let startDeployment = async (req: Request, res: Response, next: any) => {
   try {
     const deleteMode = req.body.deleteMode || false;
