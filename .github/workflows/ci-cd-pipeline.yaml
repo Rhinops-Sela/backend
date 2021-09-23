@@ -1,0 +1,41 @@
+name: backend-CI
+
+on:
+  pull_request:
+    branches: [ feature/ci-cd ]
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: Install Node.js 
+        uses: actions/setup-node@v2 
+        with:
+          node-version: '12.x'
+          
+      - name: npm install & build & run
+        run: |
+          npm install
+          npm install pm2
+          npm run build
+      
+      #Publish artifacts-backend
+      - name: Publish dist
+        uses: actions/upload-artifact@v2
+        with:
+          name: dist
+          path: /dist
+          
+      - name: Publish node_modules
+        uses: actions/upload-artifact@v2
+        with:
+          name: node_modules
+          path: /node_modules
+          
+        
+
