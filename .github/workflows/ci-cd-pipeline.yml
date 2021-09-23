@@ -27,10 +27,10 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: dist
-          path: /dist
+          path: dist
           
       - name: Publish node_modules
         uses: actions/upload-artifact@v2
         with:
           name: node_modules
-          path: /node_modules
+          path: node_modules
