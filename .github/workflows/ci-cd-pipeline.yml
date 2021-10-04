@@ -2,8 +2,10 @@
 name: backend-CI
 
 on:
-  pull_request:
-    branches: [ feature/ci-cd ]
+  push:
+    # Sequence of patterns matched against refs/heads
+    branches:
+      - develop
 
 jobs:
   build:
