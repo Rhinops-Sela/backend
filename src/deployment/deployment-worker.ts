@@ -139,6 +139,9 @@ export class DeploymentExecuter {
         ) == -1
       ) {
         try {
+          if (deployPages.length > 1 && deployPage.page.name == 'cluster'){
+            continue 
+          }
           deployPage.executionData.progress.totalPages = deployPages.length;
           const exitCode = await this.executeScript(deployPage);
           this.sendFinalMessage(exitCode, deployPage);
