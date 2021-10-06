@@ -13,8 +13,7 @@ export let validateJson = async (req: Request, res: Response, next: any) => {
 
 export let downloadOutputs = async (req: Request, res: Response, next: any) => {
   try {
-    let folderToDownload = req.query.identifier;
-    const folder = path.resolve(__dirname, `../../../../`,`outputs-${folderToDownload}`);
+    const folder = DeploymentExecuter.getWorkingFolder(req.body.identifier)
     let fileName = await DeploymentExecuter.compressFolder(folder)
     res.download(path.resolve(fileName));
   } catch (error) {
@@ -25,19 +24,8 @@ export let downloadOutputs = async (req: Request, res: Response, next: any) => {
 
 export let cleanOutputs = async (req: Request, res: Response, next: any) => {
   try {
-    let folderToDownload = req.body.identifier;
-    const folder = path.resolve(__dirname, `../../../../`,`outputs-${folderToDownload}`);
-    let fileName = await DeploymentExecuter.compressFolder(folder)
-    let workingFolderSuffix = folderToDownload.split('.').pop() || "";
-    if(workingFolderSuffix[0] == '0') {
-      workingFolderSuffix = workingFolderSuffix.substring(1)
-    }
-    let workingFolder = path.resolve(__dirname, `../../../../`,`working_folder_${workingFolderSuffix.substring(0, workingFolderSuffix.length - 1)}`);
+    let workingFolder = DeploymentExecuter.getWorkingFolder(req.body.identifier)
     var rimraf = require("rimraf");
-    Logger.info(`Deleting folder: ${folder}`)
-    rimraf.sync(folder);
-    Logger.info(`Deleting folder: ${fileName}`)
-    rimraf.sync(fileName);
     Logger.info(`Deleting folder: ${workingFolder}`)
     rimraf.sync(workingFolder);
   } catch (error) {
