@@ -28,11 +28,14 @@ export class DeploymentExecuter {
   }
 
   public static async compressFolder(sourceFolder: string): Promise<any>{
+    const fs = require('fs');
     Logger.info(`Compressing: ${sourceFolder}`)
+    fs.readdirSync(sourceFolder).forEach((file: any) => {
+      Logger.info(file);
+    });
     let output = `${sourceFolder}.zip`
     Logger.info(`Destination: ${output}`)
     const archiver = require('archiver');
-    const fs = require('fs');
     const archive = archiver('zip', { zlib: { level: 9 }});
     const stream = fs.createWriteStream(output);
     return new Promise((resolve, reject) => {
