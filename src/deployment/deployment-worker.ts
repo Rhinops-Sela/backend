@@ -18,6 +18,23 @@ export class DeploymentExecuter {
     this.timeStamp = new Date().getMilliseconds();
     this.output_folder = `outputs-${deploymentIdentifier}`;
   }
+
+  public static getWorkingFolder(identifier: string): string {
+    let workingFolderSuffix = identifier.split(".").pop() || "";
+    if (workingFolderSuffix[0] == "0") {
+      workingFolderSuffix = workingFolderSuffix.substring(1);
+    }
+    let workingFolder = path.resolve(
+      __dirname,
+      `../../../../`,
+      `working_folder_${workingFolderSuffix.substring(
+        0,
+        workingFolderSuffix.length - 1
+      )}`
+    );
+    return workingFolder;
+  }
+
   public async startDeletion(workingFolders: string[]) {
     const deployPages = this.flattenDomains(
       "Deleting",
@@ -27,25 +44,24 @@ export class DeploymentExecuter {
     return await this.startExecution(deployPages);
   }
 
-  public static async compressFolder(sourceFolder: string): Promise<any>{
-    const fs = require('fs');
-    Logger.info(`Compressing: ${sourceFolder}`)
+  public static async compressFolder(sourceFolder: string): Promise<any> {
+    const fs = require("fs");
+    Logger.info(`Compressing: ${sourceFolder}`);
     fs.readdirSync(sourceFolder).forEach((file: any) => {
       Logger.info(file);
     });
-    let output = `${sourceFolder}.zip`
-    Logger.info(`Destination: ${output}`)
-    const archiver = require('archiver');
-    const archive = archiver('zip', { zlib: { level: 9 }});
+    let output = `${sourceFolder}.zip`;
+    Logger.info(`Destination: ${output}`);
+    const archiver = require("archiver");
+    const archive = archiver("zip", { zlib: { level: 9 } });
     const stream = fs.createWriteStream(output);
     return new Promise((resolve, reject) => {
       archive
         .directory(sourceFolder, false)
-        .on('error', (err: any) => reject(err))
-        .pipe(stream)
-      ;
-  
-      stream.on('close', () => resolve(output));
+        .on("error", (err: any) => reject(err))
+        .pipe(stream);
+
+      stream.on("close", () => resolve(output));
       archive.finalize();
     });
   }
@@ -142,8 +158,8 @@ export class DeploymentExecuter {
         ) == -1
       ) {
         try {
-          if (deployPages.length > 1 && deployPage.page.name == 'cluster'){
-            continue 
+          if (deployPages.length > 1 && deployPage.page.name == "cluster") {
+            continue;
           }
           deployPage.executionData.progress.totalPages = deployPages.length;
           const exitCode = await this.executeScript(deployPage);
