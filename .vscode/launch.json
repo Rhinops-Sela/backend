@@ -19,7 +19,7 @@
       "env": {
         "AWS_ACCESS_KEY_ID": "${env:FENNEC_AWS_ACCESS_KEY_ID}",
         "AWS_SECRET_ACCESS_KEY": "${env:FENNEC_AWS_SECRET_ACCESS_KEY}",
-        "AWS_DEFAULT_REGION": "eu-west-2",
+        "AWS_DEFAULT_REGION": "${env:FENNEC_AWS_DEFAULT_REGION}",
         "COMPONENTS_ROOT": "../components",
         "WORKING_ROOT": "../working_folder",
         "MAIN_TEMPLATE_FORM": "fennec/fennec_ui_components/forms/development-form.json",
